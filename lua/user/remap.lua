@@ -33,9 +33,11 @@ vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
 vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 
 -- Buffer navigation
-vim.keymap.set("n", "<leader>bn", "<cmd>bnext<CR>", { desc = "buffer next" })
-vim.keymap.set("n", "<leader>bw", "<cmd>bp<CR>", { desc = "close buffer" })
-vim.keymap.set("n", "<leader>bl", ":Telescope buffers<CR>", { desc = "list buffers" })
+-- vim.keymap.set("n", "<leader>bn", "<cmd>bnext<CR>", { desc = "buffer next" })
+vim.keymap.set("n", "<leader>bh", "<cmd>bprevious<CR>", { desc = "buffer previous" })
+vim.keymap.set("n", "<leader>bl", "<cmd>bnext<CR>", { desc = "buffer next" })
+vim.keymap.set("n", "<leader>bw", "<cmd>bdelete<CR>", { desc = "close buffer" })
+vim.keymap.set("n", "<leader>ba", ":Telescope buffers<CR>", { desc = "list buffers" })
 
 -- Search and replace highlighted word
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "search and replace cursor word" })

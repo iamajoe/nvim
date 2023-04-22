@@ -29,8 +29,11 @@ require('lualine').setup {
     --   }
     -- }
     lualine_a = {'mode'},
-    lualine_b = {'branch', 'diff', 'diagnostics'},
-    lualine_c = {'filename'},
+    lualine_b = {'branch', 'diff', 'diagnostics', 'filename'},
+    lualine_c = {
+      --'filename'
+      'buffers'
+    },
     lualine_x = {'filetype'}, -- {'encoding', 'fileformat', 'filetype'},
     lualine_y = {
       -- show how many trail whitespaces we have
