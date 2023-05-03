@@ -32,7 +32,7 @@ return require('packer').startup(function(use)
     end
   }
 
-  use({ "folke/trouble.nvim" })
+  use({ "folke/trouble.nvim" }) -- show diagnostics
 
   -- color themes
   use 'Mofiqul/dracula.nvim'
@@ -47,6 +47,7 @@ return require('packer').startup(function(use)
   use({ 'mbbill/undotree' })
   use({ 'tpope/vim-fugitive' })
   use "lukas-reineke/indent-blankline.nvim"
+  use "github/copilot.vim"
 
   use {
       'numToStr/Comment.nvim',
