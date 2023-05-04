@@ -23,7 +23,7 @@ vim.keymap.set("x", "<leader>p", [["_dP]], { desc = "copy without losing last yi
 vim.keymap.set("v", "p", [["_dP]], { desc = "copy without losing last yield" })
 
 -- Copy to system clipboard
-vim.keymap.set({"n", "v"}, "<leader>y", [["+y]])
+vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
 vim.keymap.set("n", "<leader>Y", [["+Y]])
 
 -- Quick fix navigation
@@ -38,9 +38,11 @@ vim.keymap.set("n", "<leader>bh", "<cmd>bprevious<CR>", { desc = "buffer previou
 vim.keymap.set("n", "<leader>bl", "<cmd>bnext<CR>", { desc = "buffer next" })
 vim.keymap.set("n", "<leader>bw", "<cmd>bdelete<CR>", { desc = "close buffer" })
 vim.keymap.set("n", "<leader>ba", ":Telescope buffers<CR>", { desc = "list buffers" })
+vim.keymap.set("n", "<leader>br", "<cmd>checktime<CR>", { desc = "refresh buffer" })
 
 -- Search and replace highlighted word
-vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], { desc = "search and replace cursor word" })
+vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
+  { desc = "search and replace cursor word" })
 
 -- Copy current file
 vim.keymap.set("n", "<leader>cf", "", {
@@ -57,6 +59,6 @@ vim.keymap.set("n", "<leader>cf", "", {
   desc = "duplicate current file"
 })
 
-vim.keymap.set("n", "p", "]p") -- indent pasted text
+vim.keymap.set("n", "p", "]p")  -- indent pasted text
 vim.keymap.set("v", ">", ">gv") -- keep indented text selected
 vim.keymap.set("v", "<", "<gv") -- keep indented text selected

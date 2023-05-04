@@ -1,16 +1,16 @@
 -- This file can be loaded by calling `lua require('plugins')` from your init.vim
 
 local ensure_packer = function()
-    local fn = vim.fn
-    local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
+  local fn = vim.fn
+  local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
 
-    if fn.empty(fn.glob(install_path)) > 0 then
-        fn.system({'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path})
-        vim.cmd [[packadd packer.nvim]]
-        return true
-    end
+  if fn.empty(fn.glob(install_path)) > 0 then
+    fn.system({ 'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path })
+    vim.cmd [[packadd packer.nvim]]
+    return true
+  end
 
-    return false
+  return false
 end
 
 local packer_bootstrap = ensure_packer()
@@ -22,9 +22,9 @@ return require('packer').startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
   use {
-	  'nvim-telescope/telescope.nvim', tag = '0.1.1',
-	  requires = {
-      {'nvim-lua/plenary.nvim'},
+    'nvim-telescope/telescope.nvim', tag = '0.1.1',
+    requires = {
+      { 'nvim-lua/plenary.nvim' },
       { "nvim-telescope/telescope-live-grep-args.nvim" },
     },
     config = function()
@@ -34,63 +34,72 @@ return require('packer').startup(function(use)
 
   use({ "folke/trouble.nvim" }) -- show diagnostics
 
+  use({
+    "utilyre/barbecue.nvim",
+    tag = "*",
+    requires = {
+      "SmiteshP/nvim-navic",
+    },
+  }) -- show winbar with file info
+
   -- color themes
   use 'Mofiqul/dracula.nvim'
   use 'sainnhe/everforest'
   use 'rose-pine/neovim'
   use 'catppuccin/nvim'
 
-  use({ 'nvim-treesitter/nvim-treesitter', { run = ':TSUpdate'} })
-  use {'windwp/nvim-ts-autotag', after = 'nvim-treesitter'}
+  use({ 'nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' } })
+  use({ 'nvim-treesitter/nvim-treesitter-context' }) -- shows the signature of the method you are in
+  use { 'windwp/nvim-ts-autotag', after = 'nvim-treesitter' }
   use({ 'nvim-lua/plenary.nvim' })
-  use({ 'ThePrimeagen/harpoon' })
+  use({ 'ThePrimeagen/harpoon' }) -- mark a file to be on a separate list
   use({ 'mbbill/undotree' })
-  use({ 'tpope/vim-fugitive' })
+  use({ 'tpope/vim-fugitive' })   -- git
   use "lukas-reineke/indent-blankline.nvim"
   use "github/copilot.vim"
 
   use {
-      'numToStr/Comment.nvim',
-      config = function()
-          require('Comment').setup()
-      end
+    'numToStr/Comment.nvim',
+    config = function()
+      require('Comment').setup()
+    end
   }
 
   use {
-	  'VonHeikemen/lsp-zero.nvim',
-	  branch = 'v1.x',
-	  requires = {
-		  -- LSP Support
-		  {'neovim/nvim-lspconfig'},             -- Required
-		  {'williamboman/mason.nvim'},           -- Optional
-		  {'williamboman/mason-lspconfig.nvim'}, -- Optional
+    'VonHeikemen/lsp-zero.nvim',
+    branch = 'v2.x',
+    requires = {
+      -- LSP Support
+      { 'neovim/nvim-lspconfig' },             -- Required
+      { 'williamboman/mason.nvim' },           -- Optional
+      { 'williamboman/mason-lspconfig.nvim' }, -- Optional
 
-		  -- Autocompletion
-		  {'hrsh7th/nvim-cmp'},
-		  {'hrsh7th/cmp-buffer'},
-		  {'hrsh7th/cmp-path'},
-		  {'saadparwaiz1/cmp_luasnip'},
-		  {'hrsh7th/cmp-nvim-lsp'},
-		  {'hrsh7th/cmp-nvim-lua'},
+      -- Autocompletion
+      { 'hrsh7th/nvim-cmp' },
+      { 'hrsh7th/cmp-buffer' },
+      { 'hrsh7th/cmp-path' },
+      { 'saadparwaiz1/cmp_luasnip' },
+      { 'hrsh7th/cmp-nvim-lsp' },
+      { 'hrsh7th/cmp-nvim-lua' },
 
       -- Snippets
-		  {'L3MON4D3/LuaSnip'},
-		  {'rafamadriz/friendly-snippets'},
-	  }
+      { 'L3MON4D3/LuaSnip' },
+      { 'rafamadriz/friendly-snippets' },
+    }
   }
 
   use 'jose-elias-alvarez/null-ls.nvim'
 
   use {
-      "folke/which-key.nvim",
-      config = function()
-          vim.o.timeout = true
-          vim.o.timeoutlen = 300
-          require("which-key").setup {
-              ignore_missing = true,
-              show_help = false
-          }
-      end
+    "folke/which-key.nvim",
+    config = function()
+      vim.o.timeout = true
+      vim.o.timeoutlen = 300
+      require("which-key").setup {
+        ignore_missing = true,
+        show_help = false
+      }
+    end
   }
   --
   -- use({
@@ -106,7 +115,7 @@ return require('packer').startup(function(use)
   use 'nvim-lualine/lualine.nvim'
 
   use {
-	"windwp/nvim-autopairs",
+    "windwp/nvim-autopairs",
     config = function() require("nvim-autopairs").setup {} end
   }
 
@@ -115,4 +124,3 @@ return require('packer').startup(function(use)
     require('packer').sync()
   end
 end)
-

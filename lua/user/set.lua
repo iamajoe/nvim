@@ -32,7 +32,7 @@ vim.opt.colorcolumn = "80"
 vim.opt.cursorline = true -- highlight the current line
 vim.opt.ruler = false
 
-vim.opt.conceallevel = 0 -- so that `` is visible in markdown files
+vim.opt.conceallevel = 0       -- so that `` is visible in markdown files
 vim.opt.fileencoding = "utf-8" -- the encoding written to a files
 
 vim.opt.backup = false
@@ -41,3 +41,10 @@ vim.opt.writebackup = false -- if a file is being edited by another program (or 
 vim.opt.list = true
 vim.opt.listchars:append "eol:↴"
 
+-- auto-reload files when modified externally
+-- https://unix.stackexchange.com/a/383044
+vim.o.autoread = true
+vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorHoldI", "FocusGained" }, {
+  command = "if mode() != 'c' | checktime | endif",
+  pattern = { "*" },
+})
