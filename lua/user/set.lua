@@ -39,7 +39,7 @@ vim.opt.backup = false
 vim.opt.writebackup = false -- if a file is being edited by another program (or was written to file while editing with another program), it is not allowed to be edited
 
 vim.opt.list = true
-vim.opt.listchars:append "eol:↴"
+-- vim.opt.listchars:append "eol:↴"
 
 -- auto-reload files when modified externally
 -- https://unix.stackexchange.com/a/383044

@@ -52,9 +52,10 @@ return require('packer').startup(function(use)
   use({ 'nvim-treesitter/nvim-treesitter-context' }) -- shows the signature of the method you are in
   use { 'windwp/nvim-ts-autotag', after = 'nvim-treesitter' }
   use({ 'nvim-lua/plenary.nvim' })
-  use({ 'ThePrimeagen/harpoon' }) -- mark a file to be on a separate list
+  use({ 'nvim-pack/nvim-spectre' }) -- search and replace
+  use({ 'ThePrimeagen/harpoon' })   -- mark a file to be on a separate list
   use({ 'mbbill/undotree' })
-  use({ 'tpope/vim-fugitive' })   -- git
+  use({ 'tpope/vim-fugitive' })     -- git
   use "lukas-reineke/indent-blankline.nvim"
   use "github/copilot.vim"
 
