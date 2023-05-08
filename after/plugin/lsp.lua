@@ -1,4 +1,6 @@
 local lsp = require("lsp-zero")
+local lspconfig = require("lspconfig")
+local util = require("lspconfig/util")
 
 lsp.preset("recommended")
 
@@ -12,7 +14,7 @@ lsp.ensure_installed({
 })
 
 -- Fix Undefined global 'vim'
-require("lspconfig").lua_ls.setup(lsp.nvim_lua_ls())
+lspconfig.lua_ls.setup(lsp.nvim_lua_ls())
 
 -- Fix Undefined global 'vim'
 -- lsp.configure('lua-language-server', {
@@ -24,6 +26,23 @@ require("lspconfig").lua_ls.setup(lsp.nvim_lua_ls())
 --         }
 --     }
 -- })
+
+lspconfig.gopls.setup({
+  cmd = { "gopls" },
+  filetypes = { "go", "gomod", "gowork", "gotmpl" },
+  root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+  settings = {
+    gopls = {
+      completeUnimported = true,
+      usePlaceholders = true,
+      analyses = {
+        unusedparams = true,
+        assign = true,
+        bools = true,
+      }
+    }
+  }
+})
 
 local cmp = require('cmp')
 local cmp_select = { behavior = cmp.SelectBehavior.Select }

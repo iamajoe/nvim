@@ -89,7 +89,14 @@ return require('packer').startup(function(use)
     }
   }
 
-  use 'jose-elias-alvarez/null-ls.nvim'
+  use 'jose-elias-alvarez/null-ls.nvim' -- used for formatting code
+  use {
+    "olexsmir/gopher.nvim",
+    requires = { -- dependencies
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+  } -- nice to haves when working with go
 
   use {
     "folke/which-key.nvim",
