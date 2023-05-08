@@ -60,11 +60,11 @@ lsp.set_preferences({
 })
 
 function FormatFile()
-  if vim.o.ft == "javascript" or vim.o.ft == "typescript" then
-    vim.cmd("EslintFixAll")
-  else
-    vim.lsp.buf.format({})
-  end
+  -- if vim.o.ft == "javascript" or vim.o.ft == "typescript" then
+  --   vim.cmd("EslintFixAll")
+  -- else
+  vim.lsp.buf.format({})
+  -- end
 
   -- remove whitespace
   vim.cmd([[%s/\s\+$//e]])
