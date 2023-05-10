@@ -1,3 +1,13 @@
+local cmp_status_ok, cmp = pcall(require, "cmp")
+if not cmp_status_ok then
+  return
+end
+
+local snip_status_ok, luasnip = pcall(require, "luasnip")
+if not snip_status_ok then
+  return
+end
+
 local lsp = require("lsp-zero")
 local lspconfig = require("lspconfig")
 local util = require("lspconfig/util")
@@ -51,6 +61,21 @@ local cmp_mappings = lsp.defaults.cmp_mappings({
   ['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
   ['<C-y>'] = cmp.mapping.confirm({ select = true }),
   ["<C-Space>"] = cmp.mapping.complete(),
+  ['<Tab>'] = cmp.mapping(function(fallback)
+    local copilot_keys = vim.fn['copilot#Accept']()
+    if cmp.visible() then
+      cmp.select_next_item()
+    elseif luasnip.expand_or_jumpable() then
+      luasnip.expand_or_jump()
+    elseif copilot_keys ~= '' and type(copilot_keys) == 'string' then
+      vim.api.nvim_feedkeys(copilot_keys, 'i', true)
+    else
+      fallback()
+    end
+  end, {
+    'i',
+    's',
+  }),
 })
 
 cmp_mappings['<Tab>'] = nil

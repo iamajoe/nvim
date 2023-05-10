@@ -27,7 +27,7 @@ vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
 vim.keymap.set("n", "<leader>Y", [["+Y]])
 
 -- Quick fix navigation
-vim.keymap.set("n", "<C-r>", "[[:cdo s/old/new/gc")
+-- vim.keymap.set("n", "<-r>", "[[:cdo s/old/new/gc")
 vim.keymap.set("n", "<C-r>a", "[[:cdo s/old/new/g")
 vim.keymap.set("n", "<C-s>", "<cmd>cdo w<CR>")
 vim.keymap.set("n", "<C-w>", "<cmd>cdo bd<CR>")
