@@ -104,6 +104,11 @@ lsp.set_preferences({
 })
 
 function FormatFile()
+  -- we want to ignore when we are in netrw
+  if vim.o.ft == "netrw" or vim.o.ft == "oil" then
+    return
+  end
+
   -- if vim.o.ft == "javascript" or vim.o.ft == "typescript" then
   --   vim.cmd("EslintFixAll")
   -- else

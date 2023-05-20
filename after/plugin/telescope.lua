@@ -71,6 +71,7 @@ require('telescope').setup {
     }   -- mappings
   },    -- defaults
 }
+require("telescope").load_extension("notify")
 
 vim.keymap.set('n', '<leader>pf', builtin.find_files, {
   desc = "Find files",

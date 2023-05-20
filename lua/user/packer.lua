@@ -15,7 +15,10 @@ return require('packer').startup(function(use)
     end
   }
 
-  use({ "folke/trouble.nvim" }) -- show diagnostics
+  use 'rcarriga/nvim-notify'       -- notification window
+  use({ 'rmagatti/goto-preview' }) -- preview the definition
+
+  use({ "folke/trouble.nvim" })    -- show diagnostics
 
   use({
     "utilyre/barbecue.nvim",
@@ -26,9 +29,9 @@ return require('packer').startup(function(use)
   }) -- show winbar with file info
 
   -- color themes
-  use 'Mofiqul/dracula.nvim'
-  use 'sainnhe/everforest'
-  use 'rose-pine/neovim'
+  -- use 'Mofiqul/dracula.nvim'
+  -- use 'sainnhe/everforest'
+  -- use 'rose-pine/neovim'
   use 'catppuccin/nvim'
 
   use({ 'nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' } })
@@ -37,10 +40,9 @@ return require('packer').startup(function(use)
   use({ 'nvim-lua/plenary.nvim' })
   -- use({ 'nvim-pack/nvim-spectre' }) -- search and replace
   use({ 'ThePrimeagen/harpoon' }) -- mark a file to be on a separate list
-  use({ 'mbbill/undotree' })
-  use({ 'tpope/vim-fugitive' })   -- git
+  -- use({ 'mbbill/undotree' }) -- tree to show past undos
+  -- use({ 'tpope/vim-fugitive' })   -- git
   use "lukas-reineke/indent-blankline.nvim"
-  use "github/copilot.vim"
 
   use {
     'numToStr/Comment.nvim',
@@ -92,7 +94,9 @@ return require('packer').startup(function(use)
       }
     end
   }
-  --
+
+  use { 'stevearc/oil.nvim' } -- vim vinegar kind of file system tree but with buffer like
+
   -- use({
   --     "kylechui/nvim-surround",
   --     tag = "*", -- Use for stability; omit to use `main` branch for the latest features
@@ -103,6 +107,8 @@ return require('packer').startup(function(use)
   --     end
   -- })
 
+  use "github/copilot.vim"
+
   use 'nvim-lualine/lualine.nvim'
 
   use {
@@ -111,7 +117,5 @@ return require('packer').startup(function(use)
   }
 
   -- Automatically set up your configuration after cloning packer.nvim
-  if packer_bootstrap then
-    require('packer').sync()
-  end
+  -- require('packer').sync()
 end)
