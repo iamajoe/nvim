@@ -84,13 +84,23 @@ cmp_mappings['<S-Tab>'] = nil
 -- lsp.setup_nvim_cmp({
 cmp.setup({
   sources = {
-    { name = "path" },
-    { name = "nvim_lsp" },
+    { name = "copilot",  group_index = 2 },
+    { name = "path",     group_index = 2 },
+    { name = "nvim_lsp", group_index = 2 },
     { name = "nvim_lua" },
-    { name = "buffer",  keyword_length = 3 },
-    { name = "luasnip", keyword_length = 2 },
+    { name = "buffer",   keyword_length = 3 },
+    { name = "luasnip",  keyword_length = 2, group_index = 2 },
   },
   mapping = cmp_mappings,
+  snippet = {
+    expand = function(args)
+      require('luasnip').lsp_expand(args.body)
+    end,
+  },
+  window = {
+    completion = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered(),
+  }
 })
 
 lsp.set_preferences({

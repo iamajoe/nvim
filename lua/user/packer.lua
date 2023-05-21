@@ -107,7 +107,27 @@ return require('packer').startup(function(use)
   --     end
   -- })
 
-  use "github/copilot.vim"
+  -- Official copilot plugin has some usage issues
+  -- use "github/copilot.vim"
+  use {
+    "zbirenbaum/copilot.lua",
+    cmd = "Copilot",
+    event = "InsertEnter",
+
+    config = function()
+      require('copilot').setup({
+        panel = { enabled = false, },
+        suggestion = { enabled = false, },
+      })
+    end,
+  }
+  use {
+    "zbirenbaum/copilot-cmp",
+    after = { "copilot.lua" },
+    config = function()
+      require("copilot_cmp").setup()
+    end
+  }
 
   use 'nvim-lualine/lualine.nvim'
 
