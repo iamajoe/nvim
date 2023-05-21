@@ -95,7 +95,8 @@ return require('packer').startup(function(use)
     end
   }
 
-  use { 'stevearc/oil.nvim' } -- vim vinegar kind of file system tree but with buffer like
+  -- TODO: need to solve, having issues regarding to parent
+  -- use { 'stevearc/oil.nvim' } -- vim vinegar kind of file system tree but with buffer like
 
   -- use({
   --     "kylechui/nvim-surround",
