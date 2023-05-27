@@ -36,6 +36,8 @@ return require('packer').startup(function(use)
 
   use({ 'nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' } })
   use({ 'nvim-treesitter/nvim-treesitter-context' }) -- shows the signature of the method you are in
+  use({ 'nvim-treesitter/playground' })              -- show the tree for treesitter context
+
   use { 'windwp/nvim-ts-autotag', after = 'nvim-treesitter' }
   use({ 'nvim-lua/plenary.nvim' })
   -- use({ 'nvim-pack/nvim-spectre' }) -- search and replace
@@ -43,6 +45,7 @@ return require('packer').startup(function(use)
   -- use({ 'mbbill/undotree' }) -- tree to show past undos
   -- use({ 'tpope/vim-fugitive' })   -- git
   use "lukas-reineke/indent-blankline.nvim"
+  use({ "folke/twilight.nvim" }) -- focus on current scope highlight
 
   use {
     'numToStr/Comment.nvim',
