@@ -47,6 +47,7 @@ vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 vim.keymap.set("n", "<leader>bh", "<cmd>bprevious<CR>", { desc = "buffer previous" })
 vim.keymap.set("n", "<leader>bl", "<cmd>bnext<CR>", { desc = "buffer next" })
 vim.keymap.set("n", "<leader>bw", "<cmd>bdelete<CR>", { desc = "close buffer" })
+vim.keymap.set("n", "<leader>bwa", "<cmd>%bd|e#<CR>", { desc = "close all other buffers" })
 vim.keymap.set("n", "<leader>ba", ":Telescope buffers<CR>", { desc = "list buffers" })
 vim.keymap.set("n", "<leader>br", "<cmd>checktime<CR>", { desc = "refresh buffer" })
 
