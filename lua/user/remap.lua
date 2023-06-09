@@ -36,6 +36,7 @@ vim.keymap.set({ 'n', 'x' }, '<leader>d', '"_d', { desc = 'Remove without losing
 vim.keymap.set("n", "<C-r>a", "[[:cdo s/old/new/g")
 vim.keymap.set("n", "<C-s>", "<cmd>cdo w<CR>")
 vim.keymap.set("n", "<C-w>", "<cmd>cdo bd<CR>")
+vim.keymap.set("n", "<leader>qlc", "<cmd>cclose<CR>", { desc = "Close quicklist fix" })
 vim.keymap.set("n", "<C-q>", "<cmd>close<CR>")
 vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
