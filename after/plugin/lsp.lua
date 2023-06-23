@@ -1,4 +1,9 @@
-local cmp_status_ok, cmp = pcall(require, "cmp")
+local lsp = require("lsp-zero")
+local lspconfig = require("lspconfig")
+local util = require("lspconfig/util")
+local cmp = require('cmp')
+
+local cmp_status_ok, _ = pcall(require, "cmp")
 if not cmp_status_ok then
   return
 end
@@ -8,12 +13,8 @@ if not snip_status_ok then
   return
 end
 
-local lsp = require("lsp-zero")
-local lspconfig = require("lspconfig")
-local util = require("lspconfig/util")
 
 lsp.preset("recommended")
-
 lsp.ensure_installed({
   'html',
   'cssls',
@@ -54,7 +55,6 @@ lspconfig.gopls.setup({
   }
 })
 
-local cmp = require('cmp')
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
 local cmp_mappings = lsp.defaults.cmp_mappings({
   ['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
@@ -84,12 +84,14 @@ cmp_mappings['<S-Tab>'] = nil
 -- lsp.setup_nvim_cmp({
 cmp.setup({
   sources = {
-    { name = "copilot",  group_index = 2 },
+    -- { name = "copilot",  group_index = 2 },
     { name = "path",     group_index = 2 },
     { name = "nvim_lsp", group_index = 2 },
     { name = "nvim_lua" },
-    { name = "buffer",   keyword_length = 3 },
-    { name = "luasnip",  keyword_length = 2, group_index = 2 },
+    { name = "buffer",   group_index = 3, keyword_length = 3 },
+    { name = "luasnip" },
+    -- { name = "buffer",   keyword_length = 3 },
+    -- { name = "luasnip",  keyword_length = 2, group_index = 2 },
   },
   mapping = cmp_mappings,
   snippet = {
@@ -101,6 +103,29 @@ cmp.setup({
     completion = cmp.config.window.bordered(),
     documentation = cmp.config.window.bordered(),
   }
+})
+
+-- `/` cmdline setup.
+cmp.setup.cmdline('/', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    { name = 'buffer' }
+  }
+})
+
+-- `:` cmdline setup.
+cmp.setup.cmdline(':', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = 'path' }
+  }, {
+    {
+      name = 'cmdline',
+      option = {
+        ignore_cmds = { 'Man', '!' }
+      }
+    }
+  })
 })
 
 lsp.set_preferences({
@@ -119,7 +144,8 @@ function FormatFile()
     return
   end
 
-  if vim.o.ft == "javascript" or vim.o.ft == "typescript" then
+  if vim.o.ft == "typescript" then
+    -- if vim.o.ft == "javascript" or vim.o.ft == "typescript" then
     vim.cmd("EslintFixAll")
   else
     vim.lsp.buf.format({})

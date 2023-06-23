@@ -10,9 +10,10 @@ return require('packer').startup(function(use)
       { 'nvim-lua/plenary.nvim' },
       { "nvim-telescope/telescope-live-grep-args.nvim" },
     },
-    config = function()
-      require("telescope").load_extension("live_grep_args")
-    end
+  }
+  use {
+    "nvim-telescope/telescope-file-browser.nvim", -- sets a file browser through telescope
+    requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
   }
 
   use 'rcarriga/nvim-notify'       -- notification window
@@ -34,6 +35,10 @@ return require('packer').startup(function(use)
   -- use 'rose-pine/neovim'
   use 'catppuccin/nvim'
 
+  -- use({ 'unblevable/quick-scope'  }) -- highlights when using f F t T
+  use { "chrisgrieser/nvim-early-retirement" } -- closes buffers when they have been inactive for a long time
+  use { "rktjmp/highlight-current-n.nvim" }    -- highlights current pattern match
+
   use({ 'nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' } })
   use({ 'nvim-treesitter/nvim-treesitter-context' }) -- shows the signature of the method you are in
   use({ 'nvim-treesitter/playground' })              -- show the tree for treesitter context
@@ -47,12 +52,7 @@ return require('packer').startup(function(use)
   use "lukas-reineke/indent-blankline.nvim"
   use({ "folke/twilight.nvim" }) -- focus on current scope highlight
 
-  use {
-    'numToStr/Comment.nvim',
-    config = function()
-      require('Comment').setup()
-    end
-  }
+  use { 'numToStr/Comment.nvim', }
 
   use {
     'VonHeikemen/lsp-zero.nvim',
@@ -64,11 +64,12 @@ return require('packer').startup(function(use)
       { 'williamboman/mason-lspconfig.nvim' }, -- Optional
 
       -- Autocompletion
-      { 'hrsh7th/nvim-cmp' },
+      { 'hrsh7th/nvim-cmp' }, -- auto completion
       { 'hrsh7th/cmp-buffer' },
       { 'hrsh7th/cmp-path' },
+      { 'hrsh7th/cmp-cmdline' },  -- gives vim command line auto completion
       { 'saadparwaiz1/cmp_luasnip' },
-      { 'hrsh7th/cmp-nvim-lsp' },
+      { 'hrsh7th/cmp-nvim-lsp' }, -- auto completion glue
       { 'hrsh7th/cmp-nvim-lua' },
 
       -- Snippets
@@ -79,24 +80,14 @@ return require('packer').startup(function(use)
 
   use 'jose-elias-alvarez/null-ls.nvim' -- used for formatting code
   use {
-    "olexsmir/gopher.nvim",
-    requires = { -- dependencies
+    "olexsmir/gopher.nvim",             -- nice to haves when working with go
+    requires = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
     },
-  } -- nice to haves when working with go
-
-  use {
-    "folke/which-key.nvim",
-    config = function()
-      vim.o.timeout = true
-      vim.o.timeoutlen = 300
-      require("which-key").setup {
-        ignore_missing = true,
-        show_help = false
-      }
-    end
   }
+
+  use { "folke/which-key.nvim", } -- gives a cheatsheet of shortcuts when pressing a key
 
   -- TODO: need to solve, having issues regarding to parent
   -- use { 'stevearc/oil.nvim' } -- vim vinegar kind of file system tree but with buffer like
@@ -113,32 +104,28 @@ return require('packer').startup(function(use)
 
   -- Official copilot plugin has some usage issues
   -- use "github/copilot.vim"
-  use {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    event = "InsertEnter",
+  -- use {
+  --   "zbirenbaum/copilot.lua",
+  --   cmd = "Copilot",
+  --   event = "InsertEnter",
+  --
+  --   config = function()
+  --     require('copilot').setup({
+  --       panel = { enabled = false, },
+  --       suggestion = { enabled = false, },
+  --     })
+  --   end,
+  -- }
+  -- use {
+  --   "zbirenbaum/copilot-cmp",
+  --   after = { "copilot.lua" },
+  --   config = function()
+  --     require("copilot_cmp").setup()
+  --   end
+  -- }
 
-    config = function()
-      require('copilot').setup({
-        panel = { enabled = false, },
-        suggestion = { enabled = false, },
-      })
-    end,
-  }
-  use {
-    "zbirenbaum/copilot-cmp",
-    after = { "copilot.lua" },
-    config = function()
-      require("copilot_cmp").setup()
-    end
-  }
-
-  use 'nvim-lualine/lualine.nvim'
-
-  use {
-    "windwp/nvim-autopairs",
-    config = function() require("nvim-autopairs").setup {} end
-  }
+  use 'nvim-lualine/lualine.nvim'  -- line on bottom of vim more complete
+  use { "windwp/nvim-autopairs", } -- setup pairs when using ( or { for example
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- require('packer').sync()

@@ -1,8 +1,9 @@
 local builtin = require('telescope.builtin')
+local actions = require('telescope.actions')
+local fb_actions = require "telescope._extensions.file_browser.actions"
 
 -- method to quickly send to quickfix and replace
 local search_replace = function(prompt_bufnr)
-  local actions = require('telescope.actions')
   local action_state = require("telescope.actions.state")
   local from_entry = require("telescope.from_entry")
 
@@ -66,12 +67,44 @@ require('telescope').setup {
       i = {
         ["<C-h>"] = "which_key",
         ['<c-d>'] = require('telescope.actions').delete_buffer,
-        ['<C-r>'] = search_replace
-      } -- i
-    }   -- mappings
-  },    -- defaults
+        ['<C-r>'] = search_replace,
+        ['<C-p>'] = false,                           -- disable movement
+        ['<C-n>'] = false,                           -- disable movement
+        ['<C-j>'] = actions.move_selection_next,     -- move down
+        ['<C-k>'] = actions.move_selection_previous, -- move up
+        ['<C-o>'] = actions.select_default,          -- enter
+      }
+    }
+  },
+  extensions = {
+    file_browser = {
+      hidden = { file_browser = true, folder_browser = true },
+      dir_icon = "",
+      dir_icon_hl = "",
+      grouped = true,
+      hijack_netrw = true,
+      display_stat = { date = true, size = true, mode = false },
+      mappings = {
+        ["i"] = {
+          ["<C-f>"] = false,              -- disable toggle between file / folder
+          ["<C-f>c"] = fb_actions.create, -- create file
+          ["<C-f>r"] = fb_actions.rename, -- rename file
+          ["<C-f>m"] = fb_actions.move, -- move file
+          ["<C-f>y"] = fb_actions.copy, -- copy file
+          ["<C-f>d"] = fb_actions.remove, -- remove file
+          ["<bs>"] = false,                 -- disable backspace going parent
+          ["<C-p>"] = fb_actions.backspace, -- go parent
+        },
+        ["n"] = {
+        },
+      },
+    },
+  },
 }
+
+require("telescope").load_extension("live_grep_args")
 require("telescope").load_extension("notify")
+require("telescope").load_extension "file_browser"
 
 vim.keymap.set('n', '<leader>pf', builtin.find_files, {
   desc = "Find files",
@@ -87,3 +120,10 @@ vim.keymap.set('n', '<leader>f', function()
     previewer = false,
   })
 end, { desc = '[/] Fuzzily search in current buffer' })
+
+vim.api.nvim_set_keymap(
+  "n",
+  "<space>pb",
+  ":Telescope file_browser path=%:p:h select_buffer=true<CR>",
+  { noremap = true, desc = "Open file browser with the path of the current buffer" }
+)
