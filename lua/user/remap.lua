@@ -35,7 +35,7 @@ vim.keymap.set({ 'n', 'x' }, '<leader>d', '"_d', { desc = 'Remove without losing
 -- vim.keymap.set("n", "<-r>", "[[:cdo s/old/new/gc")
 vim.keymap.set("n", "<C-r>a", "[[:cdo s/old/new/g")
 vim.keymap.set("n", "<C-s>", "<cmd>cdo w<CR>")
-vim.keymap.set("n", "<C-w>", "<cmd>cdo bd<CR>")
+-- vim.keymap.set("n", "<C-w>", "<cmd>cdo bd<CR>")
 vim.keymap.set("n", "<leader>qlc", "<cmd>cclose<CR>", { desc = "Close quicklist from outside" })
 vim.keymap.set("n", "<C-q>", "<cmd>close<CR>")
 vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
@@ -51,6 +51,8 @@ vim.keymap.set("n", "<leader>bw", "<cmd>bdelete<CR>", { desc = "close buffer" })
 vim.keymap.set("n", "<leader>bwa", "<cmd>%bd|e#<CR>", { desc = "close all other buffers" })
 vim.keymap.set("n", "<leader>ba", ":Telescope buffers<CR>", { desc = "list buffers" })
 vim.keymap.set("n", "<leader>br", "<cmd>checktime<CR>", { desc = "refresh buffer" })
+vim.keymap.set("n", "<C-w>w", "<cmd>bdelete<CR>", { desc = "close buffer" })
+vim.keymap.set("n", "<C-w>a", "<cmd>vsplit<CR>", { desc = "split buffer" })
 
 -- Search and replace highlighted word
 vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],

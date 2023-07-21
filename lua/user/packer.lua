@@ -53,6 +53,7 @@ return require('packer').startup(function(use)
   use({ "folke/twilight.nvim" }) -- focus on current scope highlight
 
   use { 'numToStr/Comment.nvim', }
+  use({ 'haringsrob/nvim_context_vt' }) -- setups context on the brackets
 
   use {
     'VonHeikemen/lsp-zero.nvim',

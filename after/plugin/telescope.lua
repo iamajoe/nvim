@@ -82,16 +82,16 @@ require('telescope').setup {
       dir_icon = "",
       dir_icon_hl = "",
       grouped = true,
-      hijack_netrw = true,
+      -- hijack_netrw = true,
       display_stat = { date = true, size = true, mode = false },
       mappings = {
         ["i"] = {
-          ["<C-f>"] = false,              -- disable toggle between file / folder
-          ["<C-f>c"] = fb_actions.create, -- create file
-          ["<C-f>r"] = fb_actions.rename, -- rename file
-          ["<C-f>m"] = fb_actions.move, -- move file
-          ["<C-f>y"] = fb_actions.copy, -- copy file
-          ["<C-f>d"] = fb_actions.remove, -- remove file
+          ["<C-f>"] = false,                -- disable toggle between file / folder
+          ["<C-f>c"] = fb_actions.create,   -- create file
+          ["<C-f>r"] = fb_actions.rename,   -- rename file
+          ["<C-f>m"] = fb_actions.move,     -- move file
+          ["<C-f>y"] = fb_actions.copy,     -- copy file
+          ["<C-f>d"] = fb_actions.remove,   -- remove file
           ["<bs>"] = false,                 -- disable backspace going parent
           ["<C-p>"] = fb_actions.backspace, -- go parent
         },
