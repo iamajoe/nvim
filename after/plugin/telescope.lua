@@ -57,6 +57,14 @@ local search_replace = function(prompt_bufnr)
 end
 
 require('telescope').setup {
+  file_ignore_patterns = {
+    "node_modules",
+    "vendor",
+    ".git",
+    "bin",
+    "build",
+    "dist"
+  },
   defaults = {
     -- Default configuration for telescope goes here:
     -- config_key = value,
@@ -74,7 +82,18 @@ require('telescope').setup {
         ['<C-k>'] = actions.move_selection_previous, -- move up
         ['<C-o>'] = actions.select_default,          -- enter
       }
-    }
+    },
+    vimgrep_arguments = {
+      'rg',
+      '--color=never',
+      '--no-heading',
+      '--with-filename',
+      '--line-number',
+      '--column',
+      '--smart-case',
+      '--ignore-file',
+      '.gitignore'
+    },
   },
   extensions = {
     file_browser = {
@@ -104,7 +123,8 @@ require('telescope').setup {
 
 require("telescope").load_extension("live_grep_args")
 require("telescope").load_extension("notify")
-require("telescope").load_extension "file_browser"
+require("telescope").load_extension("file_browser")
+require("telescope").load_extension("yank_history")
 
 vim.keymap.set('n', '<leader>pf', builtin.find_files, {
   desc = "Find files",
@@ -121,9 +141,15 @@ vim.keymap.set('n', '<leader>f', function()
   })
 end, { desc = '[/] Fuzzily search in current buffer' })
 
+-- vim.api.nvim_set_keymap(
+--   "n",
+--   "<space>pb",
+--   ":Telescope file_browser path=%:p:h select_buffer=true<CR>",
+--   { noremap = true, desc = "Open file browser with the path of the current buffer" }
+-- )
 vim.api.nvim_set_keymap(
   "n",
-  "<space>pb",
-  ":Telescope file_browser path=%:p:h select_buffer=true<CR>",
-  { noremap = true, desc = "Open file browser with the path of the current buffer" }
+  "<leader>py",
+  ":Telescope lsp_dynamic_workspace_symbols<CR>",
+  { noremap = true, desc = "Find symbol in project" }
 )

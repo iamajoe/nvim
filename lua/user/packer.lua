@@ -15,6 +15,10 @@ return require('packer').startup(function(use)
     "nvim-telescope/telescope-file-browser.nvim", -- sets a file browser through telescope
     requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
   }
+  use({
+    "gbprod/yanky.nvim",
+    requires = { "kkharji/sqlite.lua" }
+  })                               -- shows yank history on telescope
 
   use 'rcarriga/nvim-notify'       -- notification window
   use({ 'rmagatti/goto-preview' }) -- preview the definition
