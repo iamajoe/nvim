@@ -56,6 +56,17 @@ local search_replace = function(prompt_bufnr)
   -- "cdo s/*/*/gc"
 end
 
+local telescopeConfig = require("telescope.config")
+
+-- Clone the default Telescope configuration
+local vimgrep_arguments = { unpack(telescopeConfig.values.vimgrep_arguments) }
+
+-- I want to search in hidden/dot files.
+table.insert(vimgrep_arguments, "--hidden")
+-- I don't want to search in the `.git` directory.
+table.insert(vimgrep_arguments, "--glob")
+table.insert(vimgrep_arguments, "!**/.git/*")
+
 require('telescope').setup {
   file_ignore_patterns = {
     "node_modules",
@@ -66,6 +77,9 @@ require('telescope').setup {
     "dist"
   },
   defaults = {
+    -- `hidden = true` is not supported in text grep commands.
+    vimgrep_arguments = vimgrep_arguments,
+
     -- Default configuration for telescope goes here:
     -- config_key = value,
     mappings = {

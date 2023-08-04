@@ -16,6 +16,10 @@ end
 
 lsp.preset("recommended")
 lsp.ensure_installed({
+  'lua_ls',
+  'jsonls',
+  'dockerls',
+  'bashls',
   'html',
   'cssls',
   'gopls',
