@@ -27,9 +27,9 @@ vim.keymap.set("v", "p", [["_dP]], { desc = "copy without losing last yield" })
 -- vim.keymap.set("n", "<leader>Y", [["+Y]])
 vim.keymap.set({ 'n', 'x' }, '<leader>y', '"+y', { desc = 'Copy from system clipboard' })
 vim.keymap.set({ 'n', 'x' }, '<leader>Y', '"+yg_', { desc = 'Copy from system clipboard' })
-vim.keymap.set({ 'n', 'x' }, '<leader>p', '"+p', { desc = 'Paste from system clipboard' })
-vim.keymap.set({ 'n', 'x' }, '<leader>P', '"+P', { desc = 'Paste from system clipboard' })
-vim.keymap.set({ 'n', 'x' }, '<leader>d', '"_d', { desc = 'Remove without losing clipboard' })
+-- vim.keymap.set({ 'n', 'x' }, '<leader>p', '"+p', { desc = 'Paste from system clipboard' })
+-- vim.keymap.set({ 'n', 'x' }, '<leader>P', '"+P', { desc = 'Paste from system clipboard' })
+-- vim.keymap.set({ 'n', 'x' }, '<leader>d', '"_d', { desc = 'Remove without losing clipboard' })
 
 -- Quick fix navigation
 -- vim.keymap.set("n", "<-r>", "[[:cdo s/old/new/gc")
