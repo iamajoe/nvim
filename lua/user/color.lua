@@ -12,6 +12,8 @@ function ColorCursorLine()
     magenta = "#c678dd",
     blue = "#51afef",
     red = "#6f3328",
+
+    hicyan = "#95D3CE"
   }
 
   local mode_color = {
@@ -35,16 +37,22 @@ function ColorCursorLine()
 
   local color = mode_color[vim.api.nvim_get_mode().mode]
   if color == nil then
-    color = "#1c1c1c"
+    color = "#2c2c2c"
   end
 
   -- TODO: investigate why color not working
-  color = "#1c1c1c"
+  -- color = "#1c1c1c"
+  color = "#2c2c2c"
 
   print(vim.api.nvim_get_mode().mode)
   -- vim.api.nvim_command("hi! CursorLine guifg=NONE guibg=".. color)
   vim.api.nvim_command("hi! CursorLine guifg=NONE guibg=" .. color)
   -- vim.api.nvim_command("hi! CursorLine guifg=NONE guibg=#ff0000" )
+
+  -- setup cursor colors
+  -- vim.api.nvim_command("hi Cursor guifg=" .. color .. " guibg=" .. colors.hicyan)
+  -- vim.api.nvim_command("hi Cursor2 guifg=red guibg=red")
+  -- vim.api.nvim_command("set guicursor=n-v-c:block-Cursor/lCursor,i-ci-ve:ver25-Cursor2/lCursor2,r-cr:hor20,o:hor50")
 end
 
 vim.api.nvim_command([[autocmd ModeChanged * lua ColorCursorLine()]])
