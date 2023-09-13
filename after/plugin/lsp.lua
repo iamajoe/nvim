@@ -42,9 +42,11 @@ lspconfig.lua_ls.setup(lsp.nvim_lua_ls())
 -- })
 
 lspconfig.gopls.setup({
-  cmd = { "gopls" },
+  -- cmd = { "gopls", '-remote=auto', '-remote.listen.timeout=5m', 'serve' },
+  cmd = { "gopls", 'serve' },
   filetypes = { "go", "gomod", "gowork", "gotmpl" },
   root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+  capabilities = require('cmp_nvim_lsp').default_capabilities(),
   settings = {
     gopls = {
       completeUnimported = true,
@@ -53,6 +55,16 @@ lspconfig.gopls.setup({
         unusedparams = true,
         assign = true,
         bools = true,
+      },
+      staticcheck = true,
+      linksInHover = false,
+      codelenses = {
+        generate = true,
+        gc_details = true,
+        regenerate_cgo = true,
+        tidy = true,
+        upgrade_depdendency = true,
+        vendor = true,
       }
     }
   }

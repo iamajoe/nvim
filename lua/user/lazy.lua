@@ -26,12 +26,12 @@ local plugins = {
   },
   { "gbprod/yanky.nvim",    dependencies = { "kkharji/sqlite.lua" } }, -- shows yank history on telescope
 
-  { 'rcarriga/nvim-notify' },                                       -- notification window
-  { 'rmagatti/goto-preview' },                                      -- preview the definition
+  { 'rcarriga/nvim-notify' },                                          -- notification window
+  { 'rmagatti/goto-preview' },                                         -- preview the definition
 
-  { "folke/trouble.nvim" },                                         -- show diagnostics
+  { "folke/trouble.nvim" },                                            -- show diagnostics
 
-  { "mfussenegger/nvim-dap" },                                      -- dap required by gopher
+  { "mfussenegger/nvim-dap" },                                         -- dap required by gopher
 
   {
     "utilyre/barbecue.nvim",
@@ -91,13 +91,13 @@ local plugins = {
   },
 
   { 'jose-elias-alvarez/null-ls.nvim' }, -- used for formatting code
-  {
-    "olexsmir/gopher.nvim",              -- nice to haves when working with go
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-treesitter/nvim-treesitter",
-    },
-  },
+  -- {
+  -- "olexsmir/gopher.nvim",              -- nice to haves when working with go
+  --   dependencies = {
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-treesitter/nvim-treesitter",
+  --   },
+  -- },
 
   { "folke/which-key.nvim" },      -- gives a cheatsheet of shortcuts when pressing a key
 
