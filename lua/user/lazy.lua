@@ -12,8 +12,9 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
-   {
-    'nvim-telescope/telescope.nvim', tag = '0.1.1',
+  {
+    'nvim-telescope/telescope.nvim',
+    tag = '0.1.1',
     dependencies = {
       { 'nvim-lua/plenary.nvim' },
       { "nvim-telescope/telescope-live-grep-args.nvim" },
@@ -23,12 +24,14 @@ local plugins = {
     "nvim-telescope/telescope-file-browser.nvim", -- sets a file browser through telescope
     dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
   },
-  { "gbprod/yanky.nvim", dependencies = { "kkharji/sqlite.lua" } },                               -- shows yank history on telescope
+  { "gbprod/yanky.nvim",    dependencies = { "kkharji/sqlite.lua" } }, -- shows yank history on telescope
 
-  { 'rcarriga/nvim-notify' },       -- notification window
-  { 'rmagatti/goto-preview' }, -- preview the definition
+  { 'rcarriga/nvim-notify' },                                       -- notification window
+  { 'rmagatti/goto-preview' },                                      -- preview the definition
 
-  { "folke/trouble.nvim" },    -- show diagnostics
+  { "folke/trouble.nvim" },                                         -- show diagnostics
+
+  { "mfussenegger/nvim-dap" },                                      -- dap required by gopher
 
   {
     "utilyre/barbecue.nvim",
@@ -47,11 +50,11 @@ local plugins = {
   { "chrisgrieser/nvim-early-retirement" }, -- closes buffers when they have been inactive for a long time
   { "rktjmp/highlight-current-n.nvim" },    -- highlights current pattern match
 
-  { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
+  { 'nvim-treesitter/nvim-treesitter',        build = ':TSUpdate' },
   { 'nvim-treesitter/nvim-treesitter-context' }, -- shows the signature of the method you are in
   { 'nvim-treesitter/playground' },              -- show the tree for treesitter context
 
-  { 'windwp/nvim-ts-autotag', dependencies = { 'nvim-treesitter' } },
+  { 'windwp/nvim-ts-autotag',                 dependencies = { 'nvim-treesitter' } },
   { 'nvim-lua/plenary.nvim' },
   -- ({ 'nvim-pack/nvim-spectre' }) -- search and replace
   { 'ThePrimeagen/harpoon' }, -- mark a file to be on a separate list
@@ -89,17 +92,17 @@ local plugins = {
 
   { 'jose-elias-alvarez/null-ls.nvim' }, -- used for formatting code
   {
-    "olexsmir/gopher.nvim",             -- nice to haves when working with go
+    "olexsmir/gopher.nvim",              -- nice to haves when working with go
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
     },
   },
 
-  { "folke/which-key.nvim" }, -- gives a cheatsheet of shortcuts when pressing a key
+  { "folke/which-key.nvim" },      -- gives a cheatsheet of shortcuts when pressing a key
 
   { 'nvim-lualine/lualine.nvim' }, -- line on bottom of vim more complete
-  { "windwp/nvim-autopairs" }, -- setup pairs when using ( or { for example
+  { "windwp/nvim-autopairs" },     -- setup pairs when using ( or { for example
 }
 
 require("lazy").setup(plugins, {})
