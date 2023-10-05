@@ -31,8 +31,6 @@ local plugins = {
 
   { "folke/trouble.nvim" },                                            -- show diagnostics
 
-  { "mfussenegger/nvim-dap" },                                         -- dap required by gopher
-
   {
     "utilyre/barbecue.nvim",
     name = "barbecue",
@@ -50,7 +48,11 @@ local plugins = {
   { "chrisgrieser/nvim-early-retirement" }, -- closes buffers when they have been inactive for a long time
   { "rktjmp/highlight-current-n.nvim" },    -- highlights current pattern match
 
-  { 'nvim-treesitter/nvim-treesitter',        build = ':TSUpdate' },
+  {
+    'nvim-treesitter/nvim-treesitter',
+    build = ':TSUpdate',
+    event = { "BufReadPre", "BufNewFile" }
+  },
   { 'nvim-treesitter/nvim-treesitter-context' }, -- shows the signature of the method you are in
   { 'nvim-treesitter/playground' },              -- show the tree for treesitter context
 
@@ -60,7 +62,7 @@ local plugins = {
   { 'ThePrimeagen/harpoon' }, -- mark a file to be on a separate list
   -- ({ 'mbbill/undotree' }) -- tree to show past undos
   -- ({ 'tpope/vim-fugitive' })   -- git
-  { "lukas-reineke/indent-blankline.nvim" },
+  { "lukas-reineke/indent-blankline.nvim",    main = "ibl",                        opts = {} },
   { "folke/twilight.nvim" }, -- focus on current scope highlight
 
   { 'numToStr/Comment.nvim', },
@@ -91,13 +93,14 @@ local plugins = {
   },
 
   { 'jose-elias-alvarez/null-ls.nvim' }, -- used for formatting code
-  -- {
-  -- "olexsmir/gopher.nvim",              -- nice to haves when working with go
-  --   dependencies = {
-  --     "nvim-lua/plenary.nvim",
-  --     "nvim-treesitter/nvim-treesitter",
-  --   },
-  -- },
+  {
+    "olexsmir/gopher.nvim",              -- nice to haves when working with go
+    dependencies = {
+      "mfussenegger/nvim-dap",
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+    },
+  },
 
   { "folke/which-key.nvim" },      -- gives a cheatsheet of shortcuts when pressing a key
 
