@@ -62,7 +62,7 @@ local plugins = {
   { 'ThePrimeagen/harpoon' }, -- mark a file to be on a separate list
   -- ({ 'mbbill/undotree' }) -- tree to show past undos
   -- ({ 'tpope/vim-fugitive' })   -- git
-  { "lukas-reineke/indent-blankline.nvim",    main = "ibl",                        opts = {} },
+  -- { "lukas-reineke/indent-blankline.nvim",    main = "ibl",                        opts = {} },
   { "folke/twilight.nvim" }, -- focus on current scope highlight
 
   { 'numToStr/Comment.nvim', },
