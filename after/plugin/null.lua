@@ -9,7 +9,9 @@ local sources = {
   -- null_ls.builtins.formatting.goimports,
   null_ls.builtins.formatting.gofumpt,
   null_ls.builtins.formatting.goimports_reviser,
-  null_ls.builtins.formatting.golines,
+  -- TODO: golines is also formatting the string of struct tags
+  --       figure a way to add --no-reformat-tags to it
+  -- null_ls.builtins.formatting.golines,
 }
 -- local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
