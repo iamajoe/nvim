@@ -38,13 +38,5 @@ vim.opt.fileencoding = "utf-8" -- the encoding written to a files
 vim.opt.backup = false
 vim.opt.writebackup = false -- if a file is being edited by another program (or was written to file while editing with another program), it is not allowed to be edited
 
-vim.opt.list = true
+-- vim.opt.list = true -- adds a character to show space / tab
 -- vim.opt.listchars:append "eol:↴"
-
--- auto-reload files when modified externally
--- https://unix.stackexchange.com/a/383044
-vim.o.autoread = true
-vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorHoldI", "FocusGained" }, {
-  command = "if mode() != 'c' | checktime | endif",
-  pattern = { "*" },
-})
