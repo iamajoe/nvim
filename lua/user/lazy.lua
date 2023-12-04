@@ -26,10 +26,10 @@ local plugins = {
   },
   { "gbprod/yanky.nvim",                 dependencies = { "kkharji/sqlite.lua" } }, -- shows yank history on telescope
 
-  { 'rcarriga/nvim-notify' },                                          -- notification window
-  { 'rmagatti/goto-preview' },                                         -- preview the definition
+  { 'rcarriga/nvim-notify' },                                                       -- notification window
+  { 'rmagatti/goto-preview' },                                                      -- preview the definition
 
-  { "folke/trouble.nvim" },                                            -- show diagnostics
+  { "folke/trouble.nvim" },                                                         -- show diagnostics
 
   -- {
   --   "utilyre/barbecue.nvim",
@@ -51,7 +51,10 @@ local plugins = {
   {
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
-    event = { "BufReadPre", "BufNewFile" }
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = {
+      "vrischmann/tree-sitter-templ", -- syntax for a-h/templ (go templ for html)
+    },
   },
   { 'nvim-treesitter/nvim-treesitter-context' }, -- shows the signature of the method you are in
   { 'nvim-treesitter/playground' },              -- show the tree for treesitter context
@@ -101,6 +104,8 @@ local plugins = {
       "nvim-treesitter/nvim-treesitter",
     },
   },
+
+  -- { 'joerdav/templ.vim' }, -- syntax for a-h/templ (go templ for html)
 
   { "folke/which-key.nvim" },      -- gives a cheatsheet of shortcuts when pressing a key
 

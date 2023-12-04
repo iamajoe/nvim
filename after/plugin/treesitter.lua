@@ -52,10 +52,8 @@ require 'nvim-treesitter.configs'.setup {
   autotag = {
     enable = true,
   },
-  rainbow = { enable = true }
-}
+  rainbow = { enable = true },
 
-require "nvim-treesitter.configs".setup {
   playground = {
     enable = true,
     disable = {},
@@ -75,3 +73,19 @@ require "nvim-treesitter.configs".setup {
     },
   }
 }
+
+-- TEMPL need extra shenanigans to work
+-- local treesitter_parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+-- treesitter_parser_config.templ = {
+--   install_info = {
+--     url = "https://github.com/vrischmann/tree-sitter-templ.git",
+--     files = { "src/parser.c", "src/scanner.c" },
+--     branch = "master",
+--   },
+-- }
+vim.treesitter.language.register("templ", "templ")
+vim.filetype.add({
+  extension = {
+    templ = "templ",
+  },
+})
