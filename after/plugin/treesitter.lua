@@ -83,9 +83,9 @@ require 'nvim-treesitter.configs'.setup {
 --     branch = "master",
 --   },
 -- }
-vim.treesitter.language.register("templ", "templ")
-vim.filetype.add({
-  extension = {
-    templ = "templ",
-  },
-})
+-- vim.treesitter.language.register("templ", "templ")
+-- vim.filetype.add({
+--   extension = {
+--     templ = "templ",
+--   },
+-- })

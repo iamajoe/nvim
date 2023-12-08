@@ -25,6 +25,7 @@ lsp.ensure_installed({
   'gopls',
   'eslint',
   'tsserver',
+  'templ',
 })
 
 -- Fix Undefined global 'vim'
@@ -196,3 +197,15 @@ vim.diagnostic.config({
 vim.api.nvim_create_autocmd("BufWritePre", {
   callback = FormatFile
 })
+
+-- TEMPL shenanigans
+-- https://vi.stackexchange.com/questions/42926/how-do-i-add-a-custom-lsp-to-nvim-lspconfig
+require('lspconfig.configs').templ = {
+  default_config = {
+    cmd = { "templ", "lsp" },
+    filetypes = { 'templ' },
+    root_dir = lspconfig.util.root_pattern("go.mod"),
+    settings = {},
+  },
+}
+vim.cmd([[autocmd BufRead,BufNewFile *.templ setfiletype templ]])
