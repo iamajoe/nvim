@@ -23,6 +23,7 @@ lsp.ensure_installed({
   'html',
   'cssls',
   'gopls',
+  'sqlls',
   'eslint',
   'tsserver',
   'templ',
@@ -69,6 +70,15 @@ lspconfig.gopls.setup({
       }
     }
   }
+})
+
+-- SQL shenanigans
+lspconfig.sqlls.setup({
+  capabilities = require('cmp_nvim_lsp').default_capabilities(),
+  filetypes = { 'sql' },
+  root_dir = function(_)
+    return vim.loop.cwd()
+  end,
 })
 
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
@@ -163,6 +173,8 @@ function FormatFile()
   if vim.o.ft == "typescript" then
     -- if vim.o.ft == "javascript" or vim.o.ft == "typescript" then
     vim.cmd("EslintFixAll")
+  elseif vim.o.ft == "sql" then
+    -- do nothing when sql, we dont have a formatter for it
   else
     vim.lsp.buf.format({})
   end
