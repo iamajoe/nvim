@@ -24,12 +24,24 @@ local plugins = {
     "nvim-telescope/telescope-file-browser.nvim", -- sets a file browser through telescope
     dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
   },
-  { "gbprod/yanky.nvim",                 dependencies = { "kkharji/sqlite.lua" } }, -- shows yank history on telescope
+  { "gbprod/yanky.nvim",   dependencies = { "kkharji/sqlite.lua" } }, -- shows yank history on telescope
 
-  { 'rcarriga/nvim-notify' },                                                       -- notification window
-  { 'rmagatti/goto-preview' },                                                      -- preview the definition
+  { 'rcarriga/nvim-notify' },                                         -- notification window
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+      "MunifTanjim/nui.nvim",
+      -- OPTIONAL:
+      --   `nvim-notify` is only needed, if you want to use the notification view.
+      --   If not available, we use `mini` as the fallback
+      "rcarriga/nvim-notify",
+    }
+  },
+  { 'rmagatti/goto-preview' }, -- preview the definition
 
-  { "folke/trouble.nvim" },                                                         -- show diagnostics
+  { "folke/trouble.nvim" },    -- show diagnostics
 
   -- {
   --   "utilyre/barbecue.nvim",
