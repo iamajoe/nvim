@@ -24,9 +24,9 @@ local plugins = {
     "nvim-telescope/telescope-file-browser.nvim", -- sets a file browser through telescope
     dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
   },
-  { "gbprod/yanky.nvim",   dependencies = { "kkharji/sqlite.lua" } }, -- shows yank history on telescope
+  { "gbprod/yanky.nvim",                 dependencies = { "kkharji/sqlite.lua" } }, -- shows yank history on telescope
 
-  { 'rcarriga/nvim-notify' },                                         -- notification window
+  -- { 'rcarriga/nvim-notify' }, -- notification window
   {
     "folke/noice.nvim",
     event = "VeryLazy",
