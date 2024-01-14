@@ -26,7 +26,13 @@ local plugins = {
   },
   { "gbprod/yanky.nvim",                 dependencies = { "kkharji/sqlite.lua" } }, -- shows yank history on telescope
 
-  -- { 'rcarriga/nvim-notify' }, -- notification window
+  {
+    'stevearc/dressing.nvim',
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+    }
+  }, -- better inputs on neovim
+  -- { 'rcarriga/nvim-notify' },                                           -- notification window
   {
     "folke/noice.nvim",
     event = "VeryLazy",
