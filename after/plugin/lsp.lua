@@ -72,6 +72,15 @@ lspconfig.gopls.setup({
   }
 })
 
+lspconfig.templ.setup({
+  default_config = {
+    cmd = { "templ", "lsp" },
+    filetypes = { 'templ' },
+    root_dir = lspconfig.util.root_pattern("go.mod"),
+    settings = {},
+  },
+})
+
 -- SQL shenanigans
 lspconfig.sqlls.setup({
   capabilities = require('cmp_nvim_lsp').default_capabilities(),
