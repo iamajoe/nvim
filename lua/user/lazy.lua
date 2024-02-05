@@ -77,10 +77,20 @@ local plugins = {
   { 'nvim-treesitter/nvim-treesitter-context' }, -- shows the signature of the method you are in
   { 'nvim-treesitter/playground' },              -- show the tree for treesitter context
 
-  { 'windwp/nvim-ts-autotag',                 dependencies = { 'nvim-treesitter' } },
+  {
+    'windwp/nvim-ts-autotag',
+    dependencies = { 'nvim-treesitter' }
+  },
   { 'nvim-lua/plenary.nvim' },
   -- ({ 'nvim-pack/nvim-spectre' }) -- search and replace
-  { 'ThePrimeagen/harpoon' }, -- mark a file to be on a separate list
+  {
+    'ThePrimeagen/harpoon',
+    branch = "harpoon2",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim",
+    },
+  }, -- mark a file to be on a separate list
   -- ({ 'mbbill/undotree' }) -- tree to show past undos
   -- ({ 'tpope/vim-fugitive' })   -- git
   -- { "lukas-reineke/indent-blankline.nvim",    main = "ibl",                        opts = {} },
