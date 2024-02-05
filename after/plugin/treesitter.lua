@@ -1,3 +1,17 @@
+-- TEMPL need extra shenanigans to work
+-- TODO: investigate why this errors
+--       to make templ work, uncomment the code and run :TSInstall templ
+--       then comment back again so it doesnt error
+local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
+parser_config.templ = {
+  install_info = {
+    url = "https://github.com/vrischmann/tree-sitter-templ.git",
+    files = { "src/parser.c", "src/scanner.c" },
+    branch = "master",
+  },
+  filetype = "templ"
+}
+
 require 'nvim-treesitter.configs'.setup {
   ensure_installed = {
     "bash",
@@ -22,6 +36,7 @@ require 'nvim-treesitter.configs'.setup {
     "scss",
     "sql",
     "svelte",
+    "templ",
     "terraform",
     "toml",
     "typescript",
@@ -73,19 +88,3 @@ require 'nvim-treesitter.configs'.setup {
     },
   }
 }
-
--- TEMPL need extra shenanigans to work
--- local treesitter_parser_config = require("nvim-treesitter.parsers").get_parser_configs()
--- treesitter_parser_config.templ = {
---   install_info = {
---     url = "https://github.com/vrischmann/tree-sitter-templ.git",
---     files = { "src/parser.c", "src/scanner.c" },
---     branch = "master",
---   },
--- }
--- vim.treesitter.language.register("templ", "templ")
--- vim.filetype.add({
---   extension = {
---     templ = "templ",
---   },
--- })
