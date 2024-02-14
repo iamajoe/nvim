@@ -26,7 +26,6 @@ lsp.ensure_installed({
   'sqlls',
   'eslint',
   'tsserver',
-  'templ',
 })
 
 -- Fix Undefined global 'vim'
@@ -74,10 +73,26 @@ lspconfig.gopls.setup({
 
 lspconfig.templ.setup({
   default_config = {
-    cmd = { "templ", "lsp" },
+    -- cmd = { "templ", "lsp" },
+    cmd = { os.getenv("HOME") .. "/work/bin/templ" },
     filetypes = { 'templ' },
     root_dir = lspconfig.util.root_pattern("go.mod"),
-    settings = {},
+    settings = {
+      templ = {
+        format = {
+          enable = false,
+          formatter = "",
+        }
+      }
+    },
+  },
+  settings = {
+    templ = {
+      format = {
+        enable = false,
+        formatter = "",
+      }
+    }
   },
 })
 
@@ -173,13 +188,24 @@ lsp.set_preferences({
   }
 })
 
-function FormatFile()
+function FormatFile(isAutoCmd)
   -- we want to ignore when we are in netrw
   if vim.o.ft == "netrw" or vim.o.ft == "oil" then
     return
   end
 
-  if vim.o.ft == "typescript" then
+  -- templ has some bugs on formatter, circumvent using the
+  -- cmd line formatter
+  if vim.o.ft == "templ" then
+    -- we only want to run on non auto commands because of the write process
+    -- TODO: we should fix this
+    if not isAutoCmd then
+      local file_path = vim.fn.expand('%')
+      local escaped_filepath = vim.fn.shellescape(file_path)
+      local full_command = string.format(":!%s %s", "templ fmt", escaped_filepath)
+      vim.cmd(full_command)
+    end
+  elseif vim.o.ft == "typescript" then
     -- if vim.o.ft == "javascript" or vim.o.ft == "typescript" then
     vim.cmd("EslintFixAll")
   elseif vim.o.ft == "sql" then
@@ -205,7 +231,7 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("n", "<leader>vrr", function() vim.lsp.buf.references() end, opts)
   vim.keymap.set("n", "<leader>vrn", function() vim.lsp.buf.rename() end, opts)
   vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
-  vim.keymap.set("n", "ff", FormatFile, opts)
+  vim.keymap.set("n", "ff", function() FormatFile(false) end, opts)
 end)
 
 lsp.setup()
@@ -216,17 +242,20 @@ vim.diagnostic.config({
 
 -- format on save
 vim.api.nvim_create_autocmd("BufWritePre", {
-  callback = FormatFile
+  callback = function()
+    FormatFile(true)
+  end
 })
 
 -- TEMPL shenanigans
 -- https://vi.stackexchange.com/questions/42926/how-do-i-add-a-custom-lsp-to-nvim-lspconfig
-require('lspconfig.configs').templ = {
-  default_config = {
-    cmd = { "templ", "lsp" },
-    filetypes = { 'templ' },
-    root_dir = lspconfig.util.root_pattern("go.mod"),
-    settings = {},
-  },
-}
+-- require('lspconfig.configs').templ = {
+--   default_config = {
+--     -- cmd = { "templ", "lsp" },
+--     cmd = { os.getenv("HOME") .. "/work/bin/templ", "lsp" },
+--     filetypes = { 'templ' },
+--     root_dir = lspconfig.util.root_pattern("go.mod"),
+--     settings = {},
+--   },
+-- }
 vim.cmd([[autocmd BufRead,BufNewFile *.templ setfiletype templ]])
