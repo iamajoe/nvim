@@ -127,9 +127,10 @@ local plugins = {
     }
   },
 
-  { 'jose-elias-alvarez/null-ls.nvim' }, -- used for formatting code
+  -- { 'jose-elias-alvarez/null-ls.nvim' }, -- used for formatting code
+  { 'stevearc/conform.nvim',    opts = {}, },
   {
-    "olexsmir/gopher.nvim",              -- nice to haves when working with go
+    "olexsmir/gopher.nvim", -- nice to haves when working with go
     dependencies = {
       "mfussenegger/nvim-dap",
       "nvim-lua/plenary.nvim",
