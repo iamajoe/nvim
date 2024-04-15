@@ -25,7 +25,7 @@ vim.keymap.set("v", "p", [["_dP]], { desc = "copy without losing last yield" })
 -- Copy to system clipboard
 -- vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]])
 -- vim.keymap.set("n", "<leader>Y", [["+Y]])
-vim.keymap.set({ 'n', 'x' }, '<leader>y', '"+y', { desc = 'Copy to system clipboard' })
+vim.keymap.set({ "n", "x" }, "<leader>y", '"+y', { desc = "Copy to system clipboard" })
 -- vim.keymap.set("v", '<leader>y', '"+y', { desc = 'Copy to system clipboard', noremap = true })
 -- vim.api.nvim_set_keymap('v', '<leader>y', ':<C-u>let @+ = substitute(substitute(@*, \'\\n$\', \'\', \'\'), \'\\n\', \'\\\\n\', \'g\')<CR><CR>', { noremap = true })
 
@@ -59,26 +59,32 @@ vim.keymap.set("n", "<C-w>w", "<cmd>bdelete<CR>", { desc = "close buffer" })
 vim.keymap.set("n", "<C-w>a", "<cmd>vsplit<CR>", { desc = "split buffer" })
 
 -- Search and replace highlighted word
-vim.keymap.set("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
-  { desc = "search and replace cursor word" })
+vim.keymap.set(
+	"n",
+	"<leader>s",
+	[[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
+	{ desc = "search and replace cursor word" }
+)
 
 -- Copy current file
 vim.keymap.set("n", "<leader>cf", "", {
-  callback = function()
-    if vim.bo.filetype == "netrw" then
-      vim.cmd("let netrw_selected_file=getcwd() .. '/' .. netrw#Call('NetrwGetWord')")
-      vim.cmd("let netrw_copy_to_file=input('Copy to > ', netrw_selected_file)")
-      vim.cmd("silent exec '!cp ' .. netrw_selected_file .. ' ' .. netrw_copy_to_file")
-      vim.cmd("e .")
-    else
-      vim.cmd [[silent exec "!cp '%:p' '%:p:h/%:t:r.bkp.%:e'"]]
-    end
-  end,
-  desc = "duplicate current file"
+	callback = function()
+		if vim.bo.filetype == "netrw" then
+			vim.cmd("let netrw_selected_file=getcwd() .. '/' .. netrw#Call('NetrwGetWord')")
+			vim.cmd("let netrw_copy_to_file=input('Copy to > ', netrw_selected_file)")
+			vim.cmd("silent exec '!cp ' .. netrw_selected_file .. ' ' .. netrw_copy_to_file")
+			vim.cmd("e .")
+		else
+			vim.cmd([[silent exec "!cp '%:p' '%:p:h/%:t:r.bkp.%:e'"]])
+		end
+	end,
+	desc = "duplicate current file",
 })
 
-vim.keymap.set("n", "p", "]p")                        -- indent pasted text
-vim.keymap.set("v", ">", ">gv")                       -- keep indented text selected
-vim.keymap.set("v", "<", "<gv")                       -- keep indented text selected
+vim.keymap.set("n", "p", "]p") -- indent pasted text
+vim.keymap.set("v", ">", ">gv") -- keep indented text selected
+vim.keymap.set("v", "<", "<gv") -- keep indented text selected
 
 vim.keymap.set("i", "jj", "<ESC>", { silent = true }) -- input mode escape with jj
+
+vim.keymap.set("n", "<leader>tt", "<cmd>GoTestFunc -v -n 1<CR>") -- test go func

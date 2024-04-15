@@ -26,35 +26,9 @@ local plugins = {
 	},
 	{ "gbprod/yanky.nvim", dependencies = { "kkharji/sqlite.lua" } }, -- shows yank history on telescope
 
-	{
-		"stevearc/dressing.nvim",
-		dependencies = {
-			"MunifTanjim/nui.nvim",
-		},
-	}, -- better inputs on neovim
-	-- { 'rcarriga/nvim-notify' },                                           -- notification window
-	{
-		"folke/noice.nvim",
-		event = "VeryLazy",
-		dependencies = {
-			-- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-			"MunifTanjim/nui.nvim",
-			-- OPTIONAL:
-			--   `nvim-notify` is only needed, if you want to use the notification view.
-			--   If not available, we use `mini` as the fallback
-			"rcarriga/nvim-notify",
-		},
-	},
 	{ "rmagatti/goto-preview" }, -- preview the definition
 
 	{ "folke/trouble.nvim" }, -- show diagnostics
-
-	-- {
-	--   "utilyre/barbecue.nvim",
-	--   name = "barbecue",
-	--   version = "*",
-	--   dependencies = { "SmiteshP/nvim-navic" },
-	-- }, -- show winbar with file info
 
 	-- color themes
 	--  'Mofiqul/dracula.nvim'
@@ -62,7 +36,6 @@ local plugins = {
 	--  'rose-pine/neovim'
 	{ "catppuccin/nvim" },
 
-	-- ({ 'unblevable/quick-scope'  }) -- highlights when using f F t T
 	{ "chrisgrieser/nvim-early-retirement" }, -- closes buffers when they have been inactive for a long time
 	{ "rktjmp/highlight-current-n.nvim" }, -- highlights current pattern match
 
@@ -91,9 +64,6 @@ local plugins = {
 			"nvim-telescope/telescope.nvim",
 		},
 	}, -- mark a file to be on a separate list
-	-- ({ 'mbbill/undotree' }) -- tree to show past undos
-	-- ({ 'tpope/vim-fugitive' })   -- git
-	-- { "lukas-reineke/indent-blankline.nvim",    main = "ibl",                        opts = {} },
 	{ "folke/twilight.nvim" }, -- focus on current scope highlight
 
 	{ "numToStr/Comment.nvim" },
@@ -127,23 +97,31 @@ local plugins = {
 		},
 	},
 
-	-- { 'jose-elias-alvarez/null-ls.nvim' }, -- used for formatting code
-	{ "stevearc/conform.nvim", opts = {} },
-	{
-		"olexsmir/gopher.nvim", -- nice to haves when working with go
-		dependencies = {
-			"mfussenegger/nvim-dap",
-			"nvim-lua/plenary.nvim",
-			"nvim-treesitter/nvim-treesitter",
-		},
-	},
-
-	-- { 'joerdav/templ.vim' }, -- syntax for a-h/templ (go templ for html)
-
-	{ "folke/which-key.nvim" }, -- gives a cheatsheet of shortcuts when pressing a key
+	{ "stevearc/conform.nvim", opts = {} }, -- used for formatting code
 
 	{ "nvim-lualine/lualine.nvim" }, -- line on bottom of vim more complete
-	{ "windwp/nvim-autopairs" }, -- setup pairs when using ( or { for example
+	{
+		"windwp/nvim-autopairs",
+		config = function()
+			require("nvim-autopairs").setup()
+		end,
+	}, -- setup pairs when using ( or { for example
+
+	-- go specific plugin
+	{
+		"ray-x/go.nvim",
+		dependencies = { -- optional packages
+			"ray-x/guihua.lua",
+			"neovim/nvim-lspconfig",
+			"nvim-treesitter/nvim-treesitter",
+		},
+		config = function()
+			require("go").setup()
+		end,
+		event = { "CmdlineEnter" },
+		ft = { "go", "gomod" },
+		build = ':lua require("go.install").update_all_sync()', -- if you need to install/update all binaries
+	},
 }
 
 require("lazy").setup(plugins, {})
