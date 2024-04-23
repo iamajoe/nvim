@@ -8,7 +8,7 @@ conform.setup({
 		lua = { "stylua" },
 		javascript = { "eslint", { "prettier" } },
 		typescript = { { "eslint", "tslint" }, { "prettier" } },
-		templ = { "rustywind", "goimports", "golines", "gofmt", "templ" },
+		templ = { "rustywind", "golines", "gofmt", "templ" },
 		go = { "goimports", "golines", "gofmt" },
 	},
 })
