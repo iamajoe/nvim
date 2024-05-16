@@ -32,7 +32,7 @@ vim.opt.colorcolumn = "80"
 vim.opt.cursorline = true -- highlight the current line
 vim.opt.ruler = false
 
-vim.opt.conceallevel = 0       -- so that `` is visible in markdown files
+vim.opt.conceallevel = 0 -- so that `` is visible in markdown files
 vim.opt.fileencoding = "utf-8" -- the encoding written to a files
 
 vim.opt.backup = false
@@ -40,3 +40,6 @@ vim.opt.writebackup = false -- if a file is being edited by another program (or 
 
 -- vim.opt.list = true -- adds a character to show space / tab
 -- vim.opt.listchars:append "eol:↴"
+
+-- change the leader to be the space
+vim.g.mapleader = " "

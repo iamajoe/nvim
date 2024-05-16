@@ -58,45 +58,6 @@ end
 vim.api.nvim_command([[autocmd ModeChanged * lua ColorCursorLine()]])
 vim.api.nvim_command("hi! CursorLine guifg=NONE guibg=#1c1c1c")
 
--- modify catppuccin
-require("catppuccin").setup({
-	flavour = "mocha", -- latte, frappe, macchiato, mocha
-	term_colors = true,
-	transparent_background = false,
-	no_italic = false,
-	no_bold = false,
-	styles = {
-		comments = {},
-		conditionals = {},
-		loops = {},
-		functions = {},
-		keywords = {},
-		strings = {},
-		variables = {},
-		numbers = {},
-		booleans = {},
-		properties = {},
-		types = {},
-	},
-	color_overrides = {
-		mocha = {
-			-- base = "#000000",
-			-- mantle = "#000000",
-			-- crust = "#000000",
-		},
-	},
-	highlight_overrides = {
-		mocha = function(C)
-			return {
-				TabLineSel = { bg = C.pink },
-				CmpBorder = { fg = C.surface2 },
-				Pmenu = { bg = C.none },
-				TelescopeBorder = { link = "FloatBorder" },
-			}
-		end,
-	},
-})
-
 -- select color theme
 function ColorTheme(color)
 	color = color or "catppuccin"
@@ -113,4 +74,53 @@ function ColorTheme(color)
 	-- vim.api.nvim_command("hi! @function.method guifg=#00FF00 gui=bold")
 end
 
-ColorTheme()
+return {
+	-- color themes
+	--  'sainnhe/everforest'
+	-- { "Mofiqul/dracula.nvim" },
+	-- { "rose-pine/neovim" },
+	{
+		"catppuccin/nvim",
+		config = function()
+			require("catppuccin").setup({
+				flavour = "mocha", -- latte, frappe, macchiato, mocha
+				term_colors = true,
+				transparent_background = false,
+				no_italic = false,
+				no_bold = false,
+				styles = {
+					comments = {},
+					conditionals = {},
+					loops = {},
+					functions = {},
+					keywords = {},
+					strings = {},
+					variables = {},
+					numbers = {},
+					booleans = {},
+					properties = {},
+					types = {},
+				},
+				color_overrides = {
+					mocha = {
+						-- base = "#000000",
+						-- mantle = "#000000",
+						-- crust = "#000000",
+					},
+				},
+				highlight_overrides = {
+					mocha = function(C)
+						return {
+							TabLineSel = { bg = C.pink },
+							CmpBorder = { fg = C.surface2 },
+							Pmenu = { bg = C.none },
+							TelescopeBorder = { link = "FloatBorder" },
+						}
+					end,
+				},
+			})
+
+			ColorTheme("catppuccin")
+		end,
+	},
+}

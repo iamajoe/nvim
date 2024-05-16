@@ -11,4 +11,6 @@ vim.g.netrw_sort_by = "name" -- sort by name
 vim.g.netrw_sort_direction = "normal" -- sort ASC
 
 -- Open the file tree
-vim.keymap.set("n", "<leader>pv", vim.cmd.Explore, { desc = "open file tree" })
+-- vim.keymap.set("n", "<leader>pv", vim.cmd.Explore, { desc = "open file tree" })
+
+return {}

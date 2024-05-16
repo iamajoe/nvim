@@ -1,5 +1,3 @@
-vim.g.mapleader = " "
-
 -- Show keymaps
 vim.keymap.set("n", "<leader>km", ":Telescope keymaps<CR>")
 
@@ -86,5 +84,3 @@ vim.keymap.set("v", ">", ">gv") -- keep indented text selected
 vim.keymap.set("v", "<", "<gv") -- keep indented text selected
 
 vim.keymap.set("i", "jj", "<ESC>", { silent = true }) -- input mode escape with jj
-
-vim.keymap.set("n", "<leader>tt", "<cmd>GoTestFunc -v -n 1<CR>") -- test go func
