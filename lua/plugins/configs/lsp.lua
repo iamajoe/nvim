@@ -110,6 +110,8 @@ lspconfig.sqlls.setup({
 	end,
 })
 
+lspconfig.vuels.setup({})
+
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
 local cmp_mappings = lsp.defaults.cmp_mappings({
 	["<C-p>"] = cmp.mapping.select_prev_item(cmp_select),
