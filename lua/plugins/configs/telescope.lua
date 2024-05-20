@@ -136,7 +136,7 @@ require("telescope").setup({
 
 require("telescope").load_extension("live_grep_args")
 require("telescope").load_extension("file_browser")
-require("telescope").load_extension("yank_history")
+-- require("telescope").load_extension("yank_history")
 
 vim.keymap.set("n", "<leader>pf", builtin.find_files, {
 	desc = "Find files",
