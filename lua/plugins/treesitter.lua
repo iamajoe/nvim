@@ -12,6 +12,7 @@ local treesitterConfig = {
 		"gowork",
 		"graphql",
 		"html",
+		"java",
 		"javascript",
 		"jsdoc",
 		"json",
