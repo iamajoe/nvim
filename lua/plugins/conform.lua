@@ -12,6 +12,7 @@ return {
 					css = { "stylelint" },
 					scss = { "stylelint" },
 					lua = { "stylua" },
+					java = { "google-java-format" },
 					javascript = { "eslint", { "prettier" } },
 					typescript = { { "eslint", "tslint" }, { "prettier" } },
 					templ = { "rustywind", "templ" },
