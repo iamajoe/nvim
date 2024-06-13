@@ -7,6 +7,8 @@ return {
 		config = function()
 			require("oil").setup({
 				default_file_explorer = true,
+				delete_to_trash = true,
+				skip_confirm_for_simple_edits = true,
 				columns = { "icon" },
 				keymaps = {
 					["<C-s>"] = false,
@@ -18,6 +20,9 @@ return {
 				},
 				view_options = {
 					show_hidden = true,
+					is_always_hidden = function(name, _)
+						return name == ".." or name == ".git" or name == "node_modules" or name == "vendor"
+					end,
 				},
 			})
 
