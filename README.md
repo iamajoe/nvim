@@ -35,6 +35,7 @@ K                     # "hover" symbol
 <leader>vca           # code action / fix panel
 <leader>vrr           # show references
 <leader>vrn           # rename symbol
+<leader>vo            # show outline
 
 <leader>xq            # quickfix diagnostics
 <leader>xd            # document diagnostics

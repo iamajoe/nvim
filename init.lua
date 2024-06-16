@@ -19,5 +19,5 @@ require("lazy").setup({ import = "plugins" }, {
 	},
 })
 
-require("remap")
+require("keymap")
 require("cmds")

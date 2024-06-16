@@ -9,6 +9,7 @@ local config = {
 
 return {
 	"mfussenegger/nvim-jdtls",
+	enabled = false,
 	config = function()
 		require("jdtls").start_or_attach(config)
 	end,
