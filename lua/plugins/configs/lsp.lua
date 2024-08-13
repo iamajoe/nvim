@@ -23,8 +23,8 @@ lsp.ensure_installed({
 	"cssls",
 	"gopls",
 	"sqlls",
-	"eslint",
 	"tsserver",
+	"eslint",
 })
 
 -- Fix Undefined global 'vim'
@@ -40,6 +40,23 @@ lspconfig.lua_ls.setup(lsp.nvim_lua_ls())
 --         }
 --     }
 -- })
+
+lspconfig.tsserver.setup({
+	root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json"),
+	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+	cmd = { "typescript-language-server", "--stdio" },
+})
+
+lspconfig.eslint.setup({
+	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+	settings = {
+		workingDirectory = {
+			mode = "auto",
+		},
+		format = { enable = true },
+		lint = { enable = true },
+	},
+})
 
 lspconfig.gopls.setup({
 	-- cmd = { "gopls", "-remote=auto", "-remote.listen.timeout=5m", "serve" },
