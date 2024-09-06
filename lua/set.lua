@@ -32,7 +32,7 @@ vim.opt.colorcolumn = "80"
 vim.opt.cursorline = true -- highlight the current line
 vim.opt.ruler = false
 
-vim.opt.conceallevel = 0 -- so that `` is visible in markdown files
+vim.opt.conceallevel = 0       -- so that `` is visible in markdown files
 vim.opt.fileencoding = "utf-8" -- the encoding written to a files
 
 vim.opt.backup = false
