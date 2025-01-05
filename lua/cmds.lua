@@ -14,7 +14,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 })
 
--- handle on save
+-- handle on save (before)
 vim.api.nvim_create_autocmd("BufWritePre", {
 	pattern = "*",
 	callback = function(args)
@@ -39,5 +39,13 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 		end
 
 		require("conform").format({ bufnr = bufnr, lsp_fallback = true })
+	end,
+})
+
+-- handle on save (after)
+vim.api.nvim_create_autocmd("BufWritePost", {
+	pattern = "*",
+	callback = function()
+		require("lint").try_lint()
 	end,
 })
