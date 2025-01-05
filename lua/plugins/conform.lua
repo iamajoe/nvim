@@ -8,16 +8,25 @@ return {
 
 			conform.setup({
 				lsp_fallback = true,
+
 				formatters_by_ft = {
 					css = { "stylelint" },
 					scss = { "stylelint" },
-					lua = { "stylua" },
-					-- java = { "google-java-format" },
 					javascript = { "eslint_d", "prettier" },
 					typescript = { "eslint_d", "prettier" },
-					templ = { "rustywind", "templ" },
-					-- templ = { "rustywind", "golines", "gofmt", "templ" },
+					typescriptreact = { "prettier" },
+					json = { "prettier" },
+					html = { "prettier" },
+					nml = { "prettier" },
+					markdown = { "prettier" },
+					yaml = { "prettier" },
 					go = { "goimports", "golines", "gofmt" },
+					-- templ = { "rustywind", "templ" },
+					-- templ = { "rustywind", "golines", "gofmt", "templ" },
+					lua = { "stylua" },
+					java = { "google-java-format" },
+					cpp = { "clang_format", "cpplint" },
+					arduino = { "clang-format" },
 				},
 			})
 		end,

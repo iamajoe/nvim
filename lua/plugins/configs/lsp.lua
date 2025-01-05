@@ -93,32 +93,6 @@ lspconfig.gopls.setup({
 	},
 })
 
-lspconfig.templ.setup({
-	default_config = {
-		cmd = { "templ", "lsp" },
-		-- cmd = { os.getenv("HOME") .. "/work/bin/templ" },
-		filetypes = { "templ" },
-		root_dir = lspconfig.util.root_pattern("go.mod"),
-		settings = {
-			templ = {
-				format = {
-					enable = false,
-					formatter = "",
-				},
-			},
-		},
-	},
-	settings = {
-		templ = {
-			format = {
-				enable = false,
-				formatter = "",
-			},
-		},
-	},
-})
-
--- SQL shenanigans
 lspconfig.sqlls.setup({
 	capabilities = require("cmp_nvim_lsp").default_capabilities(),
 	filetypes = { "sql" },
@@ -126,8 +100,6 @@ lspconfig.sqlls.setup({
 		return vim.loop.cwd()
 	end,
 })
-
-lspconfig.vuels.setup({})
 
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
 local cmp_mappings = lsp.defaults.cmp_mappings({
@@ -253,5 +225,3 @@ lsp.setup()
 vim.diagnostic.config({
 	virtual_text = true,
 })
-
-vim.cmd([[autocmd BufRead,BufNewFile *.templ setfiletype templ]])
