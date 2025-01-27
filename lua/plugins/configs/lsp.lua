@@ -23,7 +23,6 @@ lsp.ensure_installed({
 	"cssls",
 	"gopls",
 	"sqlls",
-	"tsserver",
 	"eslint",
 })
 
@@ -41,11 +40,12 @@ lspconfig.lua_ls.setup(lsp.nvim_lua_ls())
 --     }
 -- })
 
-lspconfig.tsserver.setup({
-	root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json"),
-	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-	cmd = { "typescript-language-server", "--stdio" },
-})
+-- NOTE: tsserver is deprecated
+-- lspconfig.tsserver.setup({
+-- 	root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json"),
+-- 	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+-- 	cmd = { "typescript-language-server", "--stdio" },
+-- })
 
 lspconfig.eslint.setup({
 	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
@@ -100,6 +100,8 @@ lspconfig.sqlls.setup({
 		return vim.loop.cwd()
 	end,
 })
+
+lspconfig.zls.setup({})
 
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
 local cmp_mappings = lsp.defaults.cmp_mappings({
