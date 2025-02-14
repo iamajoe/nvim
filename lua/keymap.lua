@@ -83,4 +83,4 @@ vim.keymap.set("n", "p", "]p") -- indent pasted text
 vim.keymap.set("v", ">", ">gv") -- keep indented text selected
 vim.keymap.set("v", "<", "<gv") -- keep indented text selected
 
-vim.keymap.set("i", "jj", "<ESC>", { silent = true }) -- input mode escape with jj
+-- vim.keymap.set("i", "jj", "<ESC>", { silent = true }) -- input mode escape with jj
