@@ -8,6 +8,7 @@ return {
 
 			conform.setup({
 				lsp_fallback = true,
+				async = true,
 
 				formatters_by_ft = {
 					css = { "stylelint" },
@@ -17,7 +18,7 @@ return {
 					typescriptreact = { "eslint_d", "prettier" },
 					json = { "prettier" },
 					html = { "prettier" },
-					nml = { "prettier" },
+					-- nml = { "prettier" },
 					markdown = { "prettier" },
 					yaml = { "prettier" },
 					go = { "goimports", "golines", "gofmt" },
@@ -25,11 +26,16 @@ return {
 					-- templ = { "rustywind", "golines", "gofmt", "templ" },
 					lua = { "stylua" },
 					-- java = { "google-java-format" },
-					cpp = { "clang_format" },
+					-- cpp = { "clang_format" },
 					-- cpp = { "clang_format", "cpplint" },
-					arduino = { "clang-format" },
+					-- arduino = { "clang-format" },
 				},
 			})
+
+			-- Customise the default "prettier" command to format Markdown files as well
+			conform.formatters.prettier = {
+				prepend_args = { "--prose-wrap", "always" },
+			}
 		end,
 	},
 }
