@@ -8,6 +8,7 @@ return {
 
 			conform.setup({
 				lsp_fallback = true,
+				async = true,
 
 				formatters_by_ft = {
 					css = { "stylelint" },
@@ -30,6 +31,11 @@ return {
 					-- arduino = { "clang-format" },
 				},
 			})
+
+			-- Customise the default "prettier" command to format Markdown files as well
+			conform.formatters.prettier = {
+				prepend_args = { "--prose-wrap", "always" },
+			}
 		end,
 	},
 }

@@ -42,6 +42,15 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 			timeout_ms = 500,
 			bufnr = bufnr,
 			lsp_fallback = true,
+			async = true,
 		})
 	end,
 })
+
+-- handle on save (after)
+-- vim.api.nvim_create_autocmd("BufWritePost", {
+-- 	pattern = "*",
+-- 	callback = function()
+-- 		require("lint").try_lint()
+-- 	end,
+-- })
