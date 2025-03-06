@@ -18,6 +18,7 @@ return {
 	{
 		-- shows yank history on telescope
 		"gbprod/yanky.nvim",
+		enabled = false,
 		dependencies = { "kkharji/sqlite.lua" },
 		config = function()
 			local utils = require("yanky.utils")

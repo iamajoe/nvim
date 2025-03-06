@@ -7,6 +7,7 @@ return {
 	{
 		-- focus on current scope highlight
 		"folke/twilight.nvim",
+		enabled = false,
 		config = function()
 			require("twilight").setup({
 				dimming = {

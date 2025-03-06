@@ -2,6 +2,7 @@ return {
 	{
 		-- preview the definition
 		"rmagatti/goto-preview",
+		enabled = false,
 		config = function()
 			require("goto-preview").setup({})
 			vim.keymap.set(

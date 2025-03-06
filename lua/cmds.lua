@@ -34,18 +34,14 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 		--
 		-- Disable autoformat for files in a certain path
 		local bufname = vim.api.nvim_buf_get_name(bufnr)
-		if bufname:match("/node_modules/") then
+		if bufname:match("/(node_modules|build|dist|vendor|%.git)/") then
 			return
 		end
 
-		require("conform").format({ bufnr = bufnr, lsp_fallback = true })
-	end,
-})
-
--- handle on save (after)
-vim.api.nvim_create_autocmd("BufWritePost", {
-	pattern = "*",
-	callback = function()
-		require("lint").try_lint()
+		require("conform").format({
+			timeout_ms = 500,
+			bufnr = bufnr,
+			lsp_fallback = true,
+		})
 	end,
 })
