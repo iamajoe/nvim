@@ -18,6 +18,7 @@ return {
 					typescriptreact = { "eslint_d", "prettier" },
 					json = { "prettier" },
 					html = { "prettier" },
+          rust = { "rustfmt" },
 					-- nml = { "prettier" },
 					markdown = { "prettier" },
 					yaml = { "prettier" },

@@ -48,6 +48,7 @@ lspconfig.lua_ls.setup(lsp.nvim_lua_ls())
 -- })
 
 lspconfig.eslint.setup({
+  root_dir = util.root_pattern("package.json", "tsconfig.json"),
 	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
 	settings = {
 		workingDirectory = {
@@ -102,6 +103,20 @@ lspconfig.sqlls.setup({
 })
 
 lspconfig.zls.setup({})
+
+lspconfig.rust_analyzer.setup({
+  -- on_attach = on_attach,
+  capabilities = require("cmp_nvim_lsp").default_capabilities(),
+  filetypes = { "rust" },
+  root_dir = util.root_pattern("Cargo.toml"),
+  settings = {
+    ['rust-analyzer'] = {
+      cargo = {
+        allFeatures = true,
+      },
+    }
+  }
+})
 
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
 local cmp_mappings = lsp.defaults.cmp_mappings({
