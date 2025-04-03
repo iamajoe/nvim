@@ -66,6 +66,10 @@ table.insert(vimgrep_arguments, "--hidden")
 -- I don't want to search in the `.git` directory.
 table.insert(vimgrep_arguments, "--glob")
 table.insert(vimgrep_arguments, "!**/.git/*")
+table.insert(vimgrep_arguments, "!**/node_modules/*")
+table.insert(vimgrep_arguments, "!**/build/*")
+table.insert(vimgrep_arguments, "!**/dist/*")
+table.insert(vimgrep_arguments, "!**/vendor/*")
 
 require("telescope").setup({
 	file_ignore_patterns = {
