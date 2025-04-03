@@ -40,12 +40,13 @@ lspconfig.lua_ls.setup(lsp.nvim_lua_ls())
 --     }
 -- })
 
--- NOTE: tsserver is deprecated
--- lspconfig.tsserver.setup({
--- 	root_dir = lspconfig.util.root_pattern("package.json", "tsconfig.json", "jsconfig.json"),
--- 	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
--- 	cmd = { "typescript-language-server", "--stdio" },
--- })
+lspconfig.ts_ls.setup({
+  root_dir = util.root_pattern("package.json", "tsconfig.json", ".git"),
+  filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+  settings = {
+    maxTsServerMemory = 4096,
+  }
+})
 
 lspconfig.eslint.setup({
   root_dir = util.root_pattern("package.json", "tsconfig.json"),
