@@ -4,6 +4,8 @@ Install:
 
 ```sh
 git clone https://github.com/iamajoe/nvim ~/.config/nvim
+npm i -g vscode-langservers-extracted
+npm install -g @fsouza/prettierd
 ```
 
 On vim, install dependencies:

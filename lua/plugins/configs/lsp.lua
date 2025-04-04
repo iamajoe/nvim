@@ -1,7 +1,8 @@
 local lsp = require("lsp-zero")
--- local lspconfig = require("lspconfig")
--- local util = require("lspconfig/util")
+local lspconfig = require("lspconfig")
+local util = require("lspconfig/util")
 local cmp = require("cmp")
+local default_capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 local cmp_status_ok, _ = pcall(require, "cmp")
 if not cmp_status_ok then
@@ -40,32 +41,41 @@ lsp.preset("recommended")
 --     }
 -- })
 
--- lspconfig.ts_ls.setup({
---   root_dir = util.root_pattern("package.json", "tsconfig.json", ".git"),
---   filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
---   settings = {
---     maxTsServerMemory = 4096,
---   }
--- })
+lspconfig.ts_ls.setup({
+  root_dir = util.root_pattern("package.json", "tsconfig.json", ".git"),
+  capabilities = default_capabilities,
+  filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+  settings = {
+    maxTsServerMemory = 4096,
+  },
+  flags = {
+    debounce_text_changes = 1000,
+  },
+})
 
--- lspconfig.eslint.setup({
---   root_dir = util.root_pattern("package.json", "tsconfig.json"),
--- 	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
--- 	settings = {
---     codeActionOnSave = {
---       enable = false,
---       mode = "all"
---     },
---     onIgnoredFiles = "off",
---     run = "onSave",
--- 		workingDirectory = {
--- 			-- mode = "auto",
---       mode = "local",
--- 		},
--- 		format = { enable = true },
--- 		lint = { enable = true },
--- 	},
--- })
+lspconfig.eslint.setup({
+  root_dir = util.root_pattern("package.json", "tsconfig.json"),
+  capabilities = default_capabilities,
+	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+	settings = {
+    codeActionOnSave = {
+      enable = false,
+      mode = "all"
+    },
+    onIgnoredFiles = "off",
+    run = "onSave",
+		workingDirectory = {
+			mode = "auto",
+      -- mode = "local",
+		},
+		format = { enable = true },
+		lint = { enable = true },
+	},
+  flags = {
+    allow_incremental_sync = false,
+    debounce_text_changes = 1000,
+  }
+})
 
 -- lspconfig.gopls.setup({
 -- 	-- cmd = { "gopls", "-remote=auto", "-remote.listen.timeout=5m", "serve" },
@@ -159,8 +169,8 @@ cmp.setup({
 		{ name = "path", group_index = 2 },
 		{ name = "nvim_lsp", group_index = 2 },
 		{ name = "nvim_lua" },
-		{ name = "buffer", group_index = 3, keyword_length = 3 },
 		{ name = "luasnip" },
+    { name = "buffer", group_index = 3, keyword_length = 3 },
 		-- { name = "buffer",   keyword_length = 3 },
 		-- { name = "luasnip",  keyword_length = 2, group_index = 2 },
 	},
@@ -255,3 +265,15 @@ lsp.setup()
 vim.diagnostic.config({
 	virtual_text = true,
 })
+
+local hover = vim.lsp.buf.hover
+---@diagnostic disable-next-line: duplicate-set-field
+vim.lsp.buf.hover = function()
+  return hover({
+    border = "single",
+    -- border = border,
+    -- max_width = 100,
+    max_width = math.floor(vim.o.columns * 0.9),
+    max_height = math.floor(vim.o.lines * 0.9),
+  })
+end

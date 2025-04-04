@@ -10,42 +10,42 @@ vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorHoldI", "FocusGai
 vim.api.nvim_create_autocmd("TextYankPost", {
 	pattern = "*",
 	callback = function()
-		vim.highlight.on_yank({ timeout = 100 })
+		vim.hl.on_yank({ timeout = 100 })
 	end,
 })
 
 -- handle on save (before)
-vim.api.nvim_create_autocmd("BufWritePre", {
-	pattern = "*",
-	callback = function(args)
-		local bufnr = args.buf
-
-		-- Disable autoformat on certain filetypes
-		-- local ignore_filetypes = { "sql", "java" }
-		local ignore_filetypes = { "netrw", "oil" }
-		if vim.tbl_contains(ignore_filetypes, vim.bo[bufnr].filetype) then
-			return
-		end
-
-		-- Disable with a global or buffer-local variable
-		if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
-			return
-		end
-		--
-		-- Disable autoformat for files in a certain path
-		local bufname = vim.api.nvim_buf_get_name(bufnr)
-		if bufname:match("/(node_modules|build|dist|vendor|%.git)/") then
-			return
-		end
-
-		require("conform").format({
-			timeout_ms = 500,
-			bufnr = bufnr,
-			lsp_fallback = true,
-			async = true,
-		})
-	end,
-})
+-- vim.api.nvim_create_autocmd("BufWritePre", {
+-- 	pattern = "*",
+-- 	callback = function(args)
+-- 		local bufnr = args.buf
+--
+-- 		-- Disable autoformat on certain filetypes
+-- 		-- local ignore_filetypes = { "sql", "java" }
+-- 		local ignore_filetypes = { "netrw", "oil" }
+-- 		if vim.tbl_contains(ignore_filetypes, vim.bo[bufnr].filetype) then
+-- 			return
+-- 		end
+--
+-- 		-- Disable with a global or buffer-local variable
+-- 		if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+-- 			return
+-- 		end
+--
+-- 		-- Disable autoformat for files in a certain path
+-- 		local bufname = vim.api.nvim_buf_get_name(bufnr)
+-- 		if bufname:match("/(node_modules|build|dist|vendor|%.git)/") then
+-- 			return
+-- 		end
+--
+-- 		require("conform").format({
+-- 			timeout_ms = 500,
+-- 			bufnr = bufnr,
+-- 			lsp_fallback = true,
+-- 			async = true,
+-- 		})
+-- 	end,
+-- })
 
 -- handle on save (after)
 -- vim.api.nvim_create_autocmd("BufWritePost", {
