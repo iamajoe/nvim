@@ -81,9 +81,9 @@ return {
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
 		event = { "BufReadPre", "BufNewFile" },
-		dependencies = {
-			"vrischmann/tree-sitter-templ", -- syntax for a-h/templ (go templ for html)
-		},
+		-- dependencies = {
+		-- 	"vrischmann/tree-sitter-templ", -- syntax for a-h/templ (go templ for html)
+		-- },
 		config = function()
 			require("nvim-treesitter.configs").setup(treesitterConfig)
 			--
@@ -91,15 +91,15 @@ return {
 			-- TODO: investigate why this errors
 			--       to make templ work, uncomment the code and run :TSInstall templ
 			--       then comment back again so it doesnt error
-			local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-			parser_config.templ = {
-				install_info = {
-					url = "https://github.com/vrischmann/tree-sitter-templ.git",
-					files = { "src/parser.c", "src/scanner.c" },
-					branch = "master",
-				},
-				filetype = "templ",
-			}
+			-- local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+			-- parser_config.templ = {
+			-- 	install_info = {
+			-- 		url = "https://github.com/vrischmann/tree-sitter-templ.git",
+			-- 		files = { "src/parser.c", "src/scanner.c" },
+			-- 		branch = "master",
+			-- 	},
+			-- 	filetype = "templ",
+			-- }
 		end,
 	},
 	-- { "nvim-treesitter/playground" }, -- show the tree for treesitter context

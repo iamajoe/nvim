@@ -12,7 +12,7 @@ return {
 
 				formatters_by_ft = {
 					css = { "stylelint" },
-					scss = { "stylelint" },
+					-- scss = { "stylelint" },
 					javascript = { "eslint_d", "prettier" },
 					typescript = { "eslint_d", "prettier" },
 					typescriptreact = { "eslint_d", "prettier" },
@@ -34,9 +34,9 @@ return {
 			})
 
 			-- Customise the default "prettier" command to format Markdown files as well
-			conform.formatters.prettier = {
-				prepend_args = { "--prose-wrap", "always" },
-			}
+			-- conform.formatters.prettier = {
+			-- 	prepend_args = { "--prose-wrap", "always" },
+			-- }
 		end,
 	},
 }

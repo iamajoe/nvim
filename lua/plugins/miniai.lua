@@ -5,10 +5,10 @@
 -- dinb : delete inside next balanced
 --
 return {
-	{
-		"echasnovski/mini.nvim",
-		config = function()
-			require("mini.ai").setup()
-		end,
-	},
+	-- {
+	-- 	"echasnovski/mini.nvim",
+	-- 	config = function()
+	-- 		require("mini.ai").setup()
+	-- 	end,
+	-- },
 }

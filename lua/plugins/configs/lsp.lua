@@ -1,6 +1,6 @@
 local lsp = require("lsp-zero")
-local lspconfig = require("lspconfig")
-local util = require("lspconfig/util")
+-- local lspconfig = require("lspconfig")
+-- local util = require("lspconfig/util")
 local cmp = require("cmp")
 
 local cmp_status_ok, _ = pcall(require, "cmp")
@@ -14,20 +14,20 @@ if not snip_status_ok then
 end
 
 lsp.preset("recommended")
-lsp.ensure_installed({
-	"lua_ls",
-	"jsonls",
-	"dockerls",
-	"bashls",
-	"html",
-	"cssls",
-	"gopls",
-	"sqlls",
-	"eslint",
-})
+-- lsp.ensure_installed({
+-- "lua_ls",
+-- "jsonls",
+-- "dockerls",
+-- "bashls",
+-- "html",
+-- "cssls",
+-- "gopls",
+-- "sqlls",
+-- "eslint",
+-- })
 
 -- Fix Undefined global 'vim'
-lspconfig.lua_ls.setup(lsp.nvim_lua_ls())
+-- lspconfig.lua_ls.setup(lsp.nvim_lua_ls())
 
 -- Fix Undefined global 'vim'
 -- lsp.configure('lua-language-server', {
@@ -40,84 +40,91 @@ lspconfig.lua_ls.setup(lsp.nvim_lua_ls())
 --     }
 -- })
 
-lspconfig.ts_ls.setup({
-  root_dir = util.root_pattern("package.json", "tsconfig.json", ".git"),
-  filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-  settings = {
-    maxTsServerMemory = 4096,
-  }
-})
+-- lspconfig.ts_ls.setup({
+--   root_dir = util.root_pattern("package.json", "tsconfig.json", ".git"),
+--   filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+--   settings = {
+--     maxTsServerMemory = 4096,
+--   }
+-- })
 
-lspconfig.eslint.setup({
-  root_dir = util.root_pattern("package.json", "tsconfig.json"),
-	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-	settings = {
-		workingDirectory = {
-			mode = "auto",
-		},
-		format = { enable = true },
-		lint = { enable = true },
-	},
-})
+-- lspconfig.eslint.setup({
+--   root_dir = util.root_pattern("package.json", "tsconfig.json"),
+-- 	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+-- 	settings = {
+--     codeActionOnSave = {
+--       enable = false,
+--       mode = "all"
+--     },
+--     onIgnoredFiles = "off",
+--     run = "onSave",
+-- 		workingDirectory = {
+-- 			-- mode = "auto",
+--       mode = "local",
+-- 		},
+-- 		format = { enable = true },
+-- 		lint = { enable = true },
+-- 	},
+-- })
 
-lspconfig.gopls.setup({
-	-- cmd = { "gopls", "-remote=auto", "-remote.listen.timeout=5m", "serve" },
-	-- cmd = { "gopls", "serve" },
-	cmd = { "gopls" },
-	filetypes = { "go", "gomod", "gowork", "gotmpl" },
-	root_dir = util.root_pattern("go.work", "go.mod", ".git"),
-	capabilities = require("cmp_nvim_lsp").default_capabilities(),
-	settings = {
-		gopls = {
-			completeUnimported = true,
-			usePlaceholders = true,
-			analyses = {
-				unusedparams = true,
-				assign = true,
-				bools = true,
-			},
-			-- env = {
-			-- GOOS = "js",
-			-- GOARCH = "wasm",
-			-- },
-			--
-			staticcheck = true,
-			linksInHover = false,
-			codelenses = {
-				generate = true,
-				gc_details = true,
-				regenerate_cgo = true,
-				tidy = true,
-				upgrade_depdendency = true,
-				vendor = true,
-			},
-		},
-	},
-})
+-- lspconfig.gopls.setup({
+-- 	-- cmd = { "gopls", "-remote=auto", "-remote.listen.timeout=5m", "serve" },
+-- 	-- cmd = { "gopls", "serve" },
+-- 	cmd = { "gopls" },
+-- 	filetypes = { "go", "gomod", "gowork", "gotmpl" },
+-- 	root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+-- 	capabilities = require("cmp_nvim_lsp").default_capabilities(),
+-- 	settings = {
+-- 		gopls = {
+-- 			completeUnimported = true,
+-- 			usePlaceholders = true,
+-- 			analyses = {
+-- 				unusedparams = true,
+-- 				assign = true,
+-- 				bools = true,
+-- 			},
+-- 			-- env = {
+-- 			-- GOOS = "js",
+-- 			-- GOARCH = "wasm",
+-- 			-- },
+-- 			--
+-- 			staticcheck = true,
+-- 			linksInHover = false,
+-- 			codelenses = {
+-- 				generate = true,
+-- 				gc_details = true,
+-- 				regenerate_cgo = true,
+-- 				tidy = true,
+-- 				upgrade_depdendency = true,
+-- 				vendor = true,
+-- 			},
+-- 		},
+-- 	},
+-- })
 
-lspconfig.sqlls.setup({
-	capabilities = require("cmp_nvim_lsp").default_capabilities(),
-	filetypes = { "sql" },
-	root_dir = function(_)
-		return vim.loop.cwd()
-	end,
-})
+-- lspconfig.sqlls.setup({
+-- 	capabilities = require("cmp_nvim_lsp").default_capabilities(),
+-- 	filetypes = { "sql" },
+-- 	root_dir = function(_)
+-- 		return vim.loop.cwd()
+-- 	end,
+-- })
 
-lspconfig.zls.setup({})
+-- lspconfig.zls.setup({})
 
-lspconfig.rust_analyzer.setup({
-  -- on_attach = on_attach,
-  capabilities = require("cmp_nvim_lsp").default_capabilities(),
-  filetypes = { "rust" },
-  root_dir = util.root_pattern("Cargo.toml"),
-  settings = {
-    ['rust-analyzer'] = {
-      cargo = {
-        allFeatures = true,
-      },
-    }
-  }
-})
+-- lspconfig.rust_analyzer.setup({
+--   -- on_attach = on_attach,
+--   capabilities = require("cmp_nvim_lsp").default_capabilities(),
+--   filetypes = { "rust" },
+--   root_dir = util.root_pattern("Cargo.toml"),
+--   settings = {
+--     ['rust-analyzer'] = {
+--       cargo = {
+--         allFeatures = true,
+--       },
+--     }
+--   }
+-- })
 
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
 local cmp_mappings = lsp.defaults.cmp_mappings({
@@ -126,13 +133,13 @@ local cmp_mappings = lsp.defaults.cmp_mappings({
 	["<C-y>"] = cmp.mapping.confirm({ select = true }),
 	["<C-Space>"] = cmp.mapping.complete(),
 	["<Tab>"] = cmp.mapping(function(fallback)
-		local copilot_keys = vim.fn["copilot#Accept"]()
+		-- local copilot_keys = vim.fn["copilot#Accept"]()
 		if cmp.visible() then
 			cmp.select_next_item()
 		elseif luasnip.expand_or_jumpable() then
 			luasnip.expand_or_jump()
-		elseif copilot_keys ~= "" and type(copilot_keys) == "string" then
-			vim.api.nvim_feedkeys(copilot_keys, "i", true)
+		-- elseif copilot_keys ~= "" and type(copilot_keys) == "string" then
+		-- 	vim.api.nvim_feedkeys(copilot_keys, "i", true)
 		else
 			fallback()
 		end
@@ -210,7 +217,12 @@ lsp.on_attach(function(client, bufnr)
 	end, opts)
 
 	vim.keymap.set("n", "K", function()
-		vim.lsp.buf.hover()
+		local filetype = vim.bo.filetype
+		if filetype == "rust" then
+			vim.cmd.RustLsp({ "hover", "actions" })
+		else
+			vim.lsp.buf.hover()
+		end
 	end, opts)
 	vim.keymap.set("n", "<leader>vws", function()
 		vim.lsp.buf.workspace_symbol()
