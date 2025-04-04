@@ -1,18 +1,6 @@
 local lsp = require("lsp-zero")
 local lspconfig = require("lspconfig")
 local util = require("lspconfig/util")
-local cmp = require("cmp")
-local default_capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-local cmp_status_ok, _ = pcall(require, "cmp")
-if not cmp_status_ok then
-	return
-end
-
-local snip_status_ok, luasnip = pcall(require, "luasnip")
-if not snip_status_ok then
-	return
-end
 
 lsp.preset("recommended")
 -- lsp.ensure_installed({
@@ -42,39 +30,39 @@ lsp.preset("recommended")
 -- })
 
 lspconfig.ts_ls.setup({
-  root_dir = util.root_pattern("package.json", "tsconfig.json", ".git"),
-  capabilities = default_capabilities,
-  filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-  settings = {
-    maxTsServerMemory = 4096,
-  },
-  flags = {
-    debounce_text_changes = 1000,
-  },
+	root_dir = util.root_pattern("package.json", "tsconfig.json", ".git"),
+	capabilities = default_capabilities,
+	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+	settings = {
+		maxTsServerMemory = 4096,
+	},
+	flags = {
+		debounce_text_changes = 1000,
+	},
 })
 
 lspconfig.eslint.setup({
-  root_dir = util.root_pattern("package.json", "tsconfig.json"),
-  capabilities = default_capabilities,
+	root_dir = util.root_pattern("package.json", "tsconfig.json"),
+	capabilities = default_capabilities,
 	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
 	settings = {
-    codeActionOnSave = {
-      enable = false,
-      mode = "all"
-    },
-    onIgnoredFiles = "off",
-    run = "onSave",
+		codeActionOnSave = {
+			enable = false,
+			mode = "all",
+		},
+		onIgnoredFiles = "off",
+		run = "onSave",
 		workingDirectory = {
 			mode = "auto",
-      -- mode = "local",
+			-- mode = "local",
 		},
 		format = { enable = true },
 		lint = { enable = true },
 	},
-  flags = {
-    allow_incremental_sync = false,
-    debounce_text_changes = 1000,
-  }
+	flags = {
+		allow_incremental_sync = false,
+		debounce_text_changes = 1000,
+	},
 })
 
 -- lspconfig.gopls.setup({
@@ -136,79 +124,6 @@ lspconfig.eslint.setup({
 --   }
 -- })
 
-local cmp_select = { behavior = cmp.SelectBehavior.Select }
-local cmp_mappings = lsp.defaults.cmp_mappings({
-	["<C-p>"] = cmp.mapping.select_prev_item(cmp_select),
-	["<C-n>"] = cmp.mapping.select_next_item(cmp_select),
-	["<C-y>"] = cmp.mapping.confirm({ select = true }),
-	["<C-Space>"] = cmp.mapping.complete(),
-	["<Tab>"] = cmp.mapping(function(fallback)
-		-- local copilot_keys = vim.fn["copilot#Accept"]()
-		if cmp.visible() then
-			cmp.select_next_item()
-		elseif luasnip.expand_or_jumpable() then
-			luasnip.expand_or_jump()
-		-- elseif copilot_keys ~= "" and type(copilot_keys) == "string" then
-		-- 	vim.api.nvim_feedkeys(copilot_keys, "i", true)
-		else
-			fallback()
-		end
-	end, {
-		"i",
-		"s",
-	}),
-})
-
-cmp_mappings["<Tab>"] = nil
-cmp_mappings["<S-Tab>"] = nil
-
--- lsp.setup_nvim_cmp({
-cmp.setup({
-	sources = {
-		-- { name = "copilot",  group_index = 2 },
-		{ name = "path", group_index = 2 },
-		{ name = "nvim_lsp", group_index = 2 },
-		{ name = "nvim_lua" },
-		{ name = "luasnip" },
-    { name = "buffer", group_index = 3, keyword_length = 3 },
-		-- { name = "buffer",   keyword_length = 3 },
-		-- { name = "luasnip",  keyword_length = 2, group_index = 2 },
-	},
-	mapping = cmp_mappings,
-	snippet = {
-		expand = function(args)
-			require("luasnip").lsp_expand(args.body)
-		end,
-	},
-	window = {
-		completion = cmp.config.window.bordered(),
-		documentation = cmp.config.window.bordered(),
-	},
-})
-
--- `/` cmdline setup.
-cmp.setup.cmdline("/", {
-	mapping = cmp.mapping.preset.cmdline(),
-	sources = {
-		{ name = "buffer" },
-	},
-})
-
--- `:` cmdline setup.
-cmp.setup.cmdline(":", {
-	mapping = cmp.mapping.preset.cmdline(),
-	sources = cmp.config.sources({
-		{ name = "path" },
-	}, {
-		{
-			name = "cmdline",
-			option = {
-				ignore_cmds = { "Man", "!" },
-			},
-		},
-	}),
-})
-
 lsp.set_preferences({
 	suggest_lsp_servers = false,
 	sign_icons = {
@@ -264,16 +179,24 @@ lsp.setup()
 
 vim.diagnostic.config({
 	virtual_text = true,
+	severity_sort = true,
+	underline = true,
+	float = {
+		border = "single",
+		source = true,
+		max_width = 100,
+	},
 })
 
+-- TODO: no longer working?!
 local hover = vim.lsp.buf.hover
 ---@diagnostic disable-next-line: duplicate-set-field
 vim.lsp.buf.hover = function()
-  return hover({
-    border = "single",
-    -- border = border,
-    -- max_width = 100,
-    max_width = math.floor(vim.o.columns * 0.9),
-    max_height = math.floor(vim.o.lines * 0.9),
-  })
+	return hover({
+		border = "single",
+		-- border = border,
+		-- max_width = 100,
+		max_width = math.floor(vim.o.columns * 0.9),
+		max_height = math.floor(vim.o.lines * 0.9),
+	})
 end
