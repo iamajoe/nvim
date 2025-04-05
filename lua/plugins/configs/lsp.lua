@@ -65,40 +65,40 @@ lspconfig.eslint.setup({
 	},
 })
 
--- lspconfig.gopls.setup({
--- 	-- cmd = { "gopls", "-remote=auto", "-remote.listen.timeout=5m", "serve" },
--- 	-- cmd = { "gopls", "serve" },
--- 	cmd = { "gopls" },
--- 	filetypes = { "go", "gomod", "gowork", "gotmpl" },
--- 	root_dir = util.root_pattern("go.work", "go.mod", ".git"),
--- 	capabilities = require("cmp_nvim_lsp").default_capabilities(),
--- 	settings = {
--- 		gopls = {
--- 			completeUnimported = true,
--- 			usePlaceholders = true,
--- 			analyses = {
--- 				unusedparams = true,
--- 				assign = true,
--- 				bools = true,
--- 			},
--- 			-- env = {
--- 			-- GOOS = "js",
--- 			-- GOARCH = "wasm",
--- 			-- },
--- 			--
--- 			staticcheck = true,
--- 			linksInHover = false,
--- 			codelenses = {
--- 				generate = true,
--- 				gc_details = true,
--- 				regenerate_cgo = true,
--- 				tidy = true,
--- 				upgrade_depdendency = true,
--- 				vendor = true,
--- 			},
--- 		},
--- 	},
--- })
+lspconfig.gopls.setup({
+	-- cmd = { "gopls", "-remote=auto", "-remote.listen.timeout=5m", "serve" },
+	-- cmd = { "gopls", "serve" },
+	cmd = { "gopls" },
+	filetypes = { "go", "gomod", "gowork", "gotmpl" },
+	root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+	-- capabilities = require("cmp_nvim_lsp").default_capabilities(),
+	settings = {
+		gopls = {
+			completeUnimported = true,
+			usePlaceholders = true,
+			analyses = {
+				unusedparams = true,
+				assign = true,
+				bools = true,
+			},
+			-- env = {
+			-- GOOS = "js",
+			-- GOARCH = "wasm",
+			-- },
+			--
+			staticcheck = true,
+			linksInHover = false,
+			codelenses = {
+				generate = true,
+				gc_details = true,
+				regenerate_cgo = true,
+				tidy = true,
+				upgrade_depdendency = true,
+				vendor = true,
+			},
+		},
+	},
+})
 
 -- lspconfig.sqlls.setup({
 -- 	capabilities = require("cmp_nvim_lsp").default_capabilities(),
