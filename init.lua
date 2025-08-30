@@ -6,55 +6,74 @@ if vim.fn.has "nvim-0.12" == 0 then
   error "[ERROR] Requires nvim 0.12"
 end
 
+-- make sure we have the undo dir
+local undodir = os.getenv("HOME") .. "/.vim/undodir"
+if vim.fn.isdirectory(undodir) == 0 then
+  vim.fn.mkdir(undodir, "p")
+end
+
+
+-- disable providers that we don't use
+vim.g.loaded_python3_provider = 0
+vim.g.loaded_ruby_provider    = 0
+vim.g.loaded_perl_provider    = 0
+
 ----------------------------------------------------
 -- GENERAL SETTINGS
 
-vim.opt.mouse          = "a"  -- Enable mouse support
-vim.opt.list           = true -- use special characters to represent things like tabs or trailing spaces
-vim.opt.listchars      = {
+vim.opt.mouse                 = "a"  -- Enable mouse support
+vim.opt.list                  = true -- use special characters to represent things like tabs or trailing spaces
+vim.opt.listchars             = {
   tab = "▏ ",
   trail = "·",
   extends = "»",
   precedes = "«",
 }
+vim.opt.showmatch             = true  -- show matching bracket
+vim.opt.showmode              = false -- dont show mode on cmdline
+
+-- Performance improvements
+vim.opt.redrawtime            = 10000
+vim.opt.maxmempattern         = 20000
 
 -- Appearance / UI
-vim.opt.number         = true                                        -- show absolute line numbers
-vim.opt.relativenumber = true                                        -- show relative line numbers (except current)
-vim.opt.cursorline     = true                                        -- highlight the current line
-vim.opt.colorcolumn    = "90"                                        -- highlight column 90
-vim.opt.signcolumn     = "yes"                                       -- always show the sign column
-vim.opt.showtabline    = 1                                           -- show tabline only if multiple tabs
-vim.opt.winborder      = "rounded"                                   -- use rounded window borders in popups
-vim.opt.termguicolors  = true                                        -- enable 24-bit colors
-vim.o.statuscolumn     = "%=%{v:relnum == 0 ? v:lnum : v:relnum} %s" -- templates gutter
-vim.opt.laststatus     = 2                                           -- allows show status line
-vim.opt.statusline     = "[%{mode()}] %f » %F %m %= %y [%c:%l-%L]"   -- template status line
+vim.opt.number                = true                                        -- show absolute line numbers
+vim.opt.relativenumber        = true                                        -- show relative line numbers (except current)
+vim.opt.cursorline            = true                                        -- highlight the current line
+vim.opt.colorcolumn           = "90"                                        -- highlight column 90
+vim.opt.signcolumn            = "yes"                                       -- always show the sign column
+vim.opt.showtabline           = 1                                           -- show tabline only if multiple tabs
+vim.opt.winborder             = "rounded"                                   -- use rounded window borders in popups
+vim.opt.termguicolors         = true                                        -- enable 24-bit colors
+vim.o.statuscolumn            = "%=%{v:relnum == 0 ? v:lnum : v:relnum} %s" -- templates gutter
+vim.opt.laststatus            = 2                                           -- allows show status line
+vim.opt.statusline            = "[%{mode()}] %f » %F %m %= %y [%c:%l-%L]"   -- template status line
 
 -- Indentation / Tabs
-vim.opt.expandtab      = true -- convert tabs to spaces
-vim.opt.tabstop        = 2    -- how many spaces a literal <Tab> shows as
-vim.opt.shiftwidth     = 2    -- spaces for each step of (auto)indent
-vim.opt.softtabstop    = 2    -- spaces a <Tab> counts for while editing
-vim.opt.smartindent    = true -- smart auto-indenting on new lines
+vim.opt.expandtab             = true -- convert tabs to spaces
+vim.opt.tabstop               = 2    -- how many spaces a literal <Tab> shows as
+vim.opt.shiftwidth            = 2    -- spaces for each step of (auto)indent
+vim.opt.softtabstop           = 2    -- spaces a <Tab> counts for while editing
+vim.opt.smartindent           = true -- smart auto-indenting on new lines
 
 -- Search
-vim.opt.ignorecase     = true  -- ignore case when searching
-vim.opt.hlsearch       = false -- don't highlight search matches after Enter
-vim.opt.incsearch      = true  -- show search matches as you type
+vim.opt.ignorecase            = true  -- ignore case when searching
+vim.opt.hlsearch              = false -- don't highlight search matches after Enter
+vim.opt.incsearch             = true  -- show search matches as you type
 
 -- Scrolling / navigation
-vim.opt.scrolloff      = 8     -- keep 8 lines visible when scrolling
-vim.opt.sidescrolloff  = 8     -- Keep 8 columns left/right of cursor
-vim.opt.wrap           = false -- don't wrap long lines
+vim.opt.scrolloff             = 8     -- keep 8 lines visible when scrolling
+vim.opt.sidescrolloff         = 8     -- Keep 8 columns left/right of cursor
+vim.opt.wrap                  = false -- don't wrap long lines
 
 -- Files / persistence
-vim.opt.swapfile       = false                                -- don't create swap files
-vim.opt.undodir        = os.getenv("HOME") .. "/.vim/undodir" -- dir for undo history
-vim.opt.undofile       = true                                 -- keep undo history across sessions
-vim.opt.fileencoding   = "utf-8"                              -- file encoding to use when writing
-vim.opt.isfname:append("@-@")                                 -- treat "@-@" as part of filenames
-vim.opt.switchbuf = { "useopen", "usetab", "newtab" }         -- eg.: quickfix open on new tab
+vim.opt.swapfile              = false                 -- don't create swap files
+vim.opt.undodir               = undodir               -- dir for undo history
+vim.opt.undofile              = true                  -- keep undo history across sessions
+vim.opt.fileencoding          = "utf-8"               -- file encoding to use when writing
+vim.opt.isfname:append("@-@")                         -- treat "@-@" as part of filenames
+vim.opt.switchbuf = { "useopen", "usetab", "newtab" } -- eg.: quickfix open on new tab
+vim.opt.autoread = true                               -- auto read files if changed outside
 
 -- Ripgrep
 vim.opt.grepprg = "rg --vimgrep --no-heading --smart-case"
@@ -129,6 +148,29 @@ local function git_branch()
   end)
   if ok and res and #res > 0 and not res:match("fatal:") then return res end
   return ""
+end
+
+-- Word count for text files
+local function word_count()
+  local ft = vim.bo.filetype
+  if ft == "markdown" or ft == "text" or ft == "tex" then
+    local words = vim.fn.wordcount().words
+    return "  " .. words .. " words "
+  end
+  return ""
+end
+
+-- File size
+local function file_size()
+  local size = vim.fn.getfsize(vim.fn.expand('%'))
+  if size < 0 then return "" end
+  if size < 1024 then
+    return size .. "B "
+  elseif size < 1024 * 1024 then
+    return string.format("%.1fK", size / 1024)
+  else
+    return string.format("%.1fM", size / 1024 / 1024)
+  end
 end
 
 ----------------------------------------------------
@@ -300,8 +342,9 @@ vim.api.nvim_set_hl(0, "SLWarn", { fg = C.peach, bold = true })
 vim.api.nvim_set_hl(0, "SLHint", { fg = C.teal, bold = true })
 vim.api.nvim_set_hl(0, "SLInfoDiag", { fg = C.blue, bold = true })
 
--- 2) Mode (extensive labels) + dynamic highlight
-local function mode_frag()
+-- 2) Status methods
+_G.file_size = file_size
+_G.mode_extended = function()
   local m = vim.api.nvim_get_mode().mode
   local label = ({
     n = "NORMAL", no = "OP-PENDING", nov = "OP-PENDING", ["noV"] = "OP-PENDING",
@@ -327,17 +370,11 @@ local function mode_frag()
 
   return string.format("%%#%s# %s %%*", group, label)
 end
-
-_G.mode_extended = mode_frag
-
--- 3) Git branch
 _G.status_git_branch = function()
   local br = git_branch()
   if br == "" then return "" end
   return string.format("(%s)", br) -- "" is the branch glyph; swap if your font lacks it
 end
-
--- 4) Diagnostics (LSP via vim.diagnostic)
 _G.status_diags = function()
   local bufnr = 0
   local function count(sev) return #vim.diagnostic.get(bufnr, { severity = sev }) end
@@ -365,6 +402,7 @@ vim.opt.statusline = table.concat({
   "%=",                                      -- right align after this
   "%{%v:lua.status_diags()%} ",              -- diagnostics (only shows existing severities)
   "%#SLDim#%y%* ",                           -- filetype, dimmed
+  "%#SLDim#%{v:lua.file_size()}%* ",         -- file dimension
   "[%c:%l-%#SLDim#%L%*]",                    -- column: line-total block
 })
 
@@ -395,7 +433,10 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
 ----------------------------------------------------
 -- CMDS
 
+local augroup = vim.api.nvim_create_augroup("UserConfig", {})
+
 vim.api.nvim_create_autocmd("LspAttach", {
+  group = augroup,
   callback = function(ev)
     local opts = { buffer = ev.buf }
 
@@ -435,9 +476,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
+  group = augroup,
   pattern = "*",
   callback = function()
     vim.hl.on_yank({ timeout = 100 }) -- briefly highlight yanked text
+  end,
+})
+
+-- Return to last edit position when opening files
+vim.api.nvim_create_autocmd("BufReadPost", {
+  group = augroup,
+  callback = function()
+    local mark = vim.api.nvim_buf_get_mark(0, '"')
+    local lcount = vim.api.nvim_buf_line_count(0)
+    if mark[1] > 0 and mark[1] <= lcount then
+      pcall(vim.api.nvim_win_set_cursor, 0, mark)
+    end
   end,
 })
 
