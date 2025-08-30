@@ -336,7 +336,7 @@ vim.api.nvim_set_hl(0, "SLInfo", { fg = C.text, bold = true })
 vim.api.nvim_set_hl(0, "SLDim", { fg = C.subtext0 })
 vim.api.nvim_set_hl(0, "SLBlock", { bg = C.surface0, fg = C.text })
 vim.api.nvim_set_hl(0, "SLModified", { fg = C.red, bold = true })
-vim.api.nvim_set_hl(0, "SLGit", { fg = C.teal, bold = false })
+vim.api.nvim_set_hl(0, "SLGit", { fg = C.mauve, bold = false })
 vim.api.nvim_set_hl(0, "SLErr", { fg = C.red, bold = true })
 vim.api.nvim_set_hl(0, "SLWarn", { fg = C.peach, bold = true })
 vim.api.nvim_set_hl(0, "SLHint", { fg = C.teal, bold = true })
@@ -398,8 +398,8 @@ vim.opt.statusline = table.concat({
   "%#SLModified#%m%*",                       -- '+' when modified
   " %#SLInfo#%f%* ",                         -- filename
   "» %F ",                                   -- full path (bold)
-  "%#SLGit#%{v:lua.status_git_branch()}%* ", -- git branch (if any)
   "%=",                                      -- right align after this
+  "%#SLGit#%{v:lua.status_git_branch()}%* ", -- git branch (if any)
   "%{%v:lua.status_diags()%} ",              -- diagnostics (only shows existing severities)
   "%#SLDim#%y%* ",                           -- filetype, dimmed
   "%#SLDim#%{v:lua.file_size()}%* ",         -- file dimension
