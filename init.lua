@@ -34,61 +34,26 @@ vim.opt.undofile = true                                -- keep undo history acro
 vim.opt.fileencoding = "utf-8"                         -- file encoding to use when writing
 vim.opt.isfname:append("@-@")                          -- treat "@-@" as part of filenames
 
+-- Ripgrep
+vim.opt.grepprg = "rg --vimgrep --no-heading --smart-case"
+vim.opt.grepformat = "%f:%l:%c:%m"
+
 vim.g.mapleader = " "
 
 ----------------------------------------------------
--- KEYMAPS
+-- HELPERS
 
-vim.keymap.set("n", "<leader>w", ":write<CR>", { desc = "File: Save" })
-
-vim.keymap.set("n", "<leader>f", ":Pick files<CR>", { desc = "Picker: Files" })
-vim.keymap.set("n", "<leader>h", ":Pick help<CR>", { desc = "Picker: Help" })
-vim.keymap.set("n", "<leader>e", ":Oil<CR>", { desc = "File explorer: Oil" })
-
-vim.keymap.set({ "n", "v", "x" }, "<leader>y", '"+y<CR>', { desc = "Clipboard: Yank" })
-vim.keymap.set({ "n", "v", "x" }, "<leader>d", '"+d<CR>', { desc = "Clipboard: Delete" })
-
--- diagnostics
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Diagnostics: Prev" })
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Diagnostics: Next" })
-vim.keymap.set("n", "<leader>do", function()
-  vim.diagnostic.open_float(nil, { scope = "line" })
-end, { desc = "Diagnostics: Show line" })
-vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "Diagnostics: Loclist" })
-vim.keymap.set("n", "<leader>dlc", ":lclose<CR>", { desc = "Diagnostics: Loclist" })
-
-vim.keymap.set("n", "J", "mzJ`z", { desc = "join lines" })
-
-vim.keymap.set("n", "p", "]p")  -- indent pasted text
-vim.keymap.set("v", ">", ">gv") -- keep indented text selected
-vim.keymap.set("v", "<", "<gv") -- keep indented text selected
-
--- Keep cursor in the middle when jumping
-vim.keymap.set("n", "<C-d>", "<C-d>zz")
-vim.keymap.set("n", "<C-u>", "<C-u>zz")
-vim.keymap.set("n", "n", "nzzzv")
-vim.keymap.set("n", "N", "Nzzzv")
-
--- Buffer navigation
-vim.keymap.set("n", "<leader>bh", "<cmd>bprevious<CR>", { desc = "Buffer: previous" })
-vim.keymap.set("n", "<leader>bl", "<cmd>bnext<CR>", { desc = "Buffer: next" })
-vim.keymap.set("n", "<leader>bw", "<cmd>bdelete<CR>", { desc = "Buffer: close" })
-vim.keymap.set("n", "<leader>bwa", "<cmd>%bd|e#<CR>", { desc = "Buffer: close all other" })
-vim.keymap.set("n", "<leader>br", "<cmd>checktime<CR>", { desc = "Buffer: refresh" })
-vim.keymap.set("n", "<C-w>a", "<cmd>vsplit<CR>", { desc = "Buffer: split" })
-vim.keymap.set({ "n", "v", "x" }, "<leader>s", ":e #<CR>", { desc = "File: Edit alternate file" })
--- TODO: still wondering if i like this one
-vim.keymap.set({ "n", "v", "x" }, "<leader>S", ":sf #<CR>", { desc = "File: Split with alternate file" })
-
--- Toggle comment
-vim.keymap.set("n", "<leader>/", function()
-  require("Comment.api").toggle.linewise.current()
-end, { desc = "Toggle comment line" })
-vim.keymap.set("x", "<leader>/", function()
-  require("comment.api").toggle.linewise(vim.fn.visualmode())
-end, { desc = "comment: toggle selection" })
-
-vim.keymap.set("i", "<leader><leader>qi", "<ESC>", { desc = "Input mode escape" })
+local function find_git_root()
+  -- Start from the current buffer’s directory
+  local bufpath = vim.api.nvim_buf_get_name(0)
+  local dir = vim.fs.dirname(bufpath)
+  local root = vim.fs.find(".git", { path = dir, upward = true })[1]
+  if root then
+    return vim.fs.dirname(root) -- parent of ".git"
+  else
+    return vim.loop.cwd()       -- fallback to current working dir
+  end
+end
 
 ----------------------------------------------------
 -- PLUGINS
@@ -205,3 +170,92 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     vim.hl.on_yank({ timeout = 100 }) -- briefly highlight yanked text
   end,
 })
+
+----------------------------------------------------
+-- KEYMAPS
+
+vim.keymap.set("n", "<leader>w", ":write<CR>", { desc = "File: Save" })
+
+vim.keymap.set("n", "<leader>pf", ":Pick files<CR>", { desc = "Picker: Files" })
+vim.keymap.set("n", "<leader>h", ":Pick help<CR>", { desc = "Picker: Help" })
+vim.keymap.set("n", "<leader>e", ":Oil<CR>", { desc = "File explorer: Oil" })
+
+vim.keymap.set({ "n", "v", "x" }, "<leader>y", '"+y<CR>', { desc = "Clipboard: Yank" })
+vim.keymap.set({ "n", "v", "x" }, "<leader>d", '"+d<CR>', { desc = "Clipboard: Delete" })
+
+-- project search
+vim.keymap.set("n", "<leader>ps", function()
+  local query = vim.fn.input("Search query > ")
+  if query == "" then return end
+
+  local ignores = table.concat({
+    "-g '!vendor/*'",
+    "-g '!node_modules/*'",
+    "-g '!bin/*'",
+    "-g '!dist/*'",
+  }, " ")
+
+  local root = find_git_root()
+  local base_cmd = "rg --vimgrep --no-heading --smart-case " .. ignores .. " "
+
+  local cmd
+  if query:sub(1, 1) == "/" then
+    -- regex mode
+    cmd = base_cmd .. vim.fn.shellescape(query:sub(2))
+  else
+    -- literal mode
+    cmd = base_cmd .. "-F " .. vim.fn.shellescape(query)
+  end
+
+  local results = vim.fn.systemlist(cmd)
+  vim.fn.setqflist({}, "r", { title = "Ripgrep (" .. root .. ")", lines = results })
+
+  -- TODO: open on same buffer
+  vim.cmd("copen")
+end, { desc = "Project: Search" })
+
+-- diagnostics
+vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Diagnostics: Prev" })
+vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Diagnostics: Next" })
+vim.keymap.set("n", "<leader>do", function()
+  vim.diagnostic.open_float(nil, { scope = "line" })
+end, { desc = "Diagnostics: Show line" })
+vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "Diagnostics: Loclist" })
+
+vim.keymap.set("n", "J", "mzJ`z", { desc = "join lines" })
+
+vim.keymap.set("n", "p", "]p")  -- indent pasted text
+vim.keymap.set("v", ">", ">gv") -- keep indented text selected
+vim.keymap.set("v", "<", "<gv") -- keep indented text selected
+
+-- quickfix / loclist
+vim.keymap.set("n", "<leader>cc", "<cmd>lclose<CR><cmd>cclose<CR>", { desc = "Close loclist and quickfix" })
+
+-- Keep cursor in the middle when jumping
+vim.keymap.set("n", "<C-d>", "<C-d>zz")
+vim.keymap.set("n", "<C-u>", "<C-u>zz")
+vim.keymap.set("n", "n", "nzzzv")
+vim.keymap.set("n", "N", "Nzzzv")
+
+-- buffer navigation
+vim.keymap.set("n", "<leader>bh", "<cmd>bprevious<CR>", { desc = "Buffer: previous" })
+vim.keymap.set("n", "<leader>bl", "<cmd>bnext<CR>", { desc = "Buffer: next" })
+vim.keymap.set("n", "<leader>bw", "<cmd>bdelete<CR>", { desc = "Buffer: close" })
+vim.keymap.set("n", "<leader>bwa", "<cmd>%bd|e#<CR>", { desc = "Buffer: close all other" })
+vim.keymap.set("n", "<leader>br", "<cmd>checktime<CR>", { desc = "Buffer: refresh" })
+vim.keymap.set("n", "<C-w>a", "<cmd>vsplit<CR>", { desc = "Buffer: split" })
+vim.keymap.set({ "n", "v", "x" }, "<leader>s", ":e #<CR>", { desc = "File: Edit alternate file" })
+-- TODO: still wondering if i like this one
+vim.keymap.set({ "n", "v", "x" }, "<leader>S", ":sf #<CR>", { desc = "File: Split with alternate file" })
+
+-- Toggle comment
+vim.keymap.set("n", "<leader>/", function()
+  require("Comment.api").toggle.linewise.current()
+end, { desc = "Comment:Toggle line" })
+vim.keymap.set(
+  "x",
+  "<leader>/",
+  '<ESC><CMD>lua require("Comment.api").locked("toggle.linewise")(vim.fn.visualmode())<CR>',
+  { desc = "Comment: Toggle block" }
+)
+
