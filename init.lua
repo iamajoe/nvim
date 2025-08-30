@@ -33,12 +33,29 @@ vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir" -- dir for undo history
 vim.opt.undofile = true                                -- keep undo history across sessions
 vim.opt.fileencoding = "utf-8"                         -- file encoding to use when writing
 vim.opt.isfname:append("@-@")                          -- treat "@-@" as part of filenames
+vim.opt.switchbuf = { "useopen", "usetab", "newtab" }  -- eg.: quickfix open on new tab
 
 -- Ripgrep
 vim.opt.grepprg = "rg --vimgrep --no-heading --smart-case"
 vim.opt.grepformat = "%f:%l:%c:%m"
 
 vim.g.mapleader = " "
+
+vim.diagnostic.config({
+  signs = {
+    linehl = {
+      [vim.diagnostic.severity.ERROR] = 'ErrorMsg',
+    },
+    numhl = {
+      [vim.diagnostic.severity.WARN] = 'WarningMsg',
+      [vim.diagnostic.severity.ERROR] = 'ErrorMsg',
+    },
+  },
+  underline = true,
+  update_in_insert = false,
+  virtual_lines = { current_line = true, },
+  virtual_text = false,
+})
 
 ----------------------------------------------------
 -- HELPERS
@@ -55,14 +72,41 @@ local function find_git_root()
   end
 end
 
+local function toggle_qf_or_loclist()
+  local buftype = vim.bo.buftype
+
+  -- Case 1: already in quickfix or loclist → go back to previous buffer
+  if buftype == "quickfix" then
+    vim.cmd("wincmd p")  -- jump to previous window
+    return
+  end
+
+  -- Case 2: in a normal buffer → prefer loclist, else quickfix
+  for _, win in ipairs(vim.fn.getwininfo()) do
+    if win.loclist == 1 then
+      vim.cmd("lopen")
+      return
+    end
+  end
+
+  if vim.fn.getqflist({ winid = 1 }).winid ~= 0 then
+    vim.cmd("copen")
+    return
+  end
+
+  vim.notify("No location list or quickfix available", vim.log.levels.INFO)
+end
+
 ----------------------------------------------------
 -- PLUGINS
 
 vim.pack.add({
-  { src = "https://github.com/catppuccin/nvim" },
-  { src = "https://github.com/stevearc/oil.nvim" },
-  { src = "https://github.com/echasnovski/mini.pick" },
-  { src = "https://github.com/numToStr/Comment.nvim" },
+  { src = "https://github.com/stevearc/oil.nvim" },                        -- file explorer
+  { src = "https://github.com/echasnovski/mini.pick" },                    -- pick files
+  { src = "https://github.com/numToStr/Comment.nvim" },                    -- toggle comment
+  { src = "https://github.com/Saghen/blink.cmp",     version = "v1.6.0" }, -- autocompletion
+  { src = "https://github.com/catppuccin/nvim" },                          -- theme
+
   -- NOTE: still deciding if i should use basic vim color groups
   -- { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
   -- NOTE: decided to use manual config per language that way i have more control
@@ -78,6 +122,7 @@ require "mini.pick".setup()
 --  ensure_installed = { "typescript", "javascript", "html", "css" },
 --  highlight = { enable = true },
 -- })
+
 require "oil".setup({
   default_file_explorer = true,
   delete_to_trash = true,
@@ -98,7 +143,61 @@ require "oil".setup({
     end,
   },
 })
+
 require("Comment").setup()
+
+require("blink.cmp").setup({
+  keymap = {
+    preset = "default",
+    ["<C-Space>"] = { function(cmp) cmp.show() end },
+    ["<C-d>"] = { "show", "show_documentation", "hide_documentation" },
+  },
+  signature = {
+    enabled = true,
+    window = {
+      border = "single",
+      max_width = math.floor(vim.o.columns * 0.8),
+      max_height = math.floor(vim.o.lines * 0.8),
+    },
+    trigger = { show_on_trigger_character = true, show_on_insert = true, },
+  },
+  completion = {
+    accept = { auto_brackets = { enabled = false, }, },
+    trigger = { show_on_accept_on_trigger_character = false, },
+    list = { selection = { preselect = false, auto_insert = false, }, },
+    keyword = { range = "full", },
+    ghost_text = {
+      enabled = false,
+      show_with_selection = true,
+      show_without_selection = false,
+      show_with_menu = true,
+    },
+    menu = {
+      auto_show = true,
+      border = "single",
+      draw = {
+        gap = 1,
+        padding = 1,
+        treesitter = { "lsp" },
+        columns = {
+          { "kind_icon" },
+          { "label",    "label_description", gap = 1 },
+        },
+      },
+    },
+    documentation = {
+      auto_show = true,
+      auto_show_delay_ms = 100,
+      treesitter_highlighting = true,
+      window = {
+        border = "single",
+        max_width = math.floor(vim.o.columns * 0.8),
+        max_height = math.floor(vim.o.lines * 0.8),
+      },
+    },
+  },
+  -- sources = { default = { "lsp", "path", "buffer", "snippets" } },
+})
 
 ----------------------------------------------------
 -- LSP
@@ -117,8 +216,6 @@ vim.cmd("hi statusline guibg=NONE")
 ----------------------------------------------------
 -- CMDS
 
--- TODO: auto completion isnt great
-
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(ev)
     local opts = { buffer = ev.buf }
@@ -127,11 +224,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
     local supports = function(method)
       return client and client.supports_method and client:supports_method(method)
-    end
-
-    -- setup completion
-    if supports('textDocument/completion') and client then
-      vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
     end
 
     if supports("textDocument/definition") then
@@ -149,7 +241,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
         vim.tbl_extend("force", opts, { desc = "LSP: Format buffer" }))
     end
 
-    -- TODO: action seems to not be working
+    -- TODO: action seems to not be working?!
     if supports("textDocument/codeAction") then
       local code_action = function()
         -- use `{}` to avoid “cursor outside buffer” at attach-time
@@ -162,7 +254,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
   end,
 })
-vim.cmd("set completeopt+=noselect")
 
 vim.api.nvim_create_autocmd("TextYankPost", {
   pattern = "*",
@@ -195,7 +286,6 @@ vim.keymap.set("n", "<leader>ps", function()
     "-g '!dist/*'",
   }, " ")
 
-  local root = find_git_root()
   local base_cmd = "rg --vimgrep --no-heading --smart-case " .. ignores .. " "
 
   local cmd
@@ -208,18 +298,22 @@ vim.keymap.set("n", "<leader>ps", function()
   end
 
   local results = vim.fn.systemlist(cmd)
+  local root = find_git_root()
   vim.fn.setqflist({}, "r", { title = "Ripgrep (" .. root .. ")", lines = results })
 
   -- TODO: open on same buffer
   vim.cmd("copen")
 end, { desc = "Project: Search" })
 
+vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, { desc = "LSP: Show signature help" })
+
 -- diagnostics
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Diagnostics: Prev" })
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Diagnostics: Next" })
-vim.keymap.set("n", "<leader>do", function()
-  vim.diagnostic.open_float(nil, { scope = "line" })
-end, { desc = "Diagnostics: Show line" })
+vim.keymap.set("n", "[d", function() vim.diagnostic.jump { count = -1 } end, { desc = "Diagnostics: Prev" })
+vim.keymap.set("n", "]d", function() vim.diagnostic.jump { count = 1 } end, { desc = "Diagnostics: Next" })
+vim.keymap.set("n", "<leader>vd", vim.diagnostic.open_float, { desc = "Diagnostics: View" })
+-- vim.keymap.set("n", "<leader>vca", vim.lsp.buf.code_action(), { desc = "Diagnostics: Action")
+vim.keymap.set("n", "<leader>do", function() vim.diagnostic.open_float(nil, { scope = "line" }) end,
+  { desc = "Diagnostics: Show line" })
 vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "Diagnostics: Loclist" })
 
 vim.keymap.set("n", "J", "mzJ`z", { desc = "join lines" })
@@ -230,6 +324,7 @@ vim.keymap.set("v", "<", "<gv") -- keep indented text selected
 
 -- quickfix / loclist
 vim.keymap.set("n", "<leader>cc", "<cmd>lclose<CR><cmd>cclose<CR>", { desc = "Close loclist and quickfix" })
+vim.keymap.set("n", "<leader>cv", toggle_qf_or_loclist, { desc = "Toggle focus loclist/quickfix" })
 
 -- Keep cursor in the middle when jumping
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
@@ -249,13 +344,10 @@ vim.keymap.set({ "n", "v", "x" }, "<leader>s", ":e #<CR>", { desc = "File: Edit 
 vim.keymap.set({ "n", "v", "x" }, "<leader>S", ":sf #<CR>", { desc = "File: Split with alternate file" })
 
 -- Toggle comment
-vim.keymap.set("n", "<leader>/", function()
-  require("Comment.api").toggle.linewise.current()
-end, { desc = "Comment:Toggle line" })
+vim.keymap.set("n", "<leader>/", require("Comment.api").toggle.linewise.current, { desc = "Comment:Toggle line" })
 vim.keymap.set(
   "x",
   "<leader>/",
   '<ESC><CMD>lua require("Comment.api").locked("toggle.linewise")(vim.fn.visualmode())<CR>',
   { desc = "Comment: Toggle block" }
 )
-
