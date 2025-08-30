@@ -119,6 +119,18 @@ local function toggle_qf_or_loclist()
   vim.notify("No location list or quickfix available", vim.log.levels.INFO)
 end
 
+local function git_branch()
+  -- gitsigns path (fast, async-cached)
+  local head = vim.b.gitsigns_head or (vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.head)
+  if head and #head > 0 then return head end
+  -- fallback: cheap shell call (silenced if not a repo)
+  local ok, res = pcall(function()
+    return vim.fn.systemlist({ "git", "-C", vim.fn.expand("%:p:h"), "rev-parse", "--abbrev-ref", "HEAD" })[1]
+  end)
+  if ok and res and #res > 0 and not res:match("fatal:") then return res end
+  return ""
+end
+
 ----------------------------------------------------
 -- PLUGINS
 
@@ -318,18 +330,7 @@ end
 
 _G.mode_extended = mode_frag
 
--- 3) Git branch (prefers gitsigns if present; otherwise shell fallback)
-local function git_branch()
-  -- gitsigns path (fast, async-cached)
-  local head = vim.b.gitsigns_head or (vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.head)
-  if head and #head > 0 then return head end
-  -- fallback: cheap shell call (silenced if not a repo)
-  local ok, res = pcall(function()
-    return vim.fn.systemlist({ "git", "-C", vim.fn.expand("%:p:h"), "rev-parse", "--abbrev-ref", "HEAD" })[1]
-  end)
-  if ok and res and #res > 0 and not res:match("fatal:") then return res end
-  return ""
-end
+-- 3) Git branch 
 _G.status_git_branch = function()
   local br = git_branch()
   if br == "" then return "" end
