@@ -9,7 +9,7 @@ end
 ----------------------------------------------------
 -- GENERAL SETTINGS
 
-vim.opt.mouse          = "a" -- Enable mouse support
+vim.opt.mouse          = "a"  -- Enable mouse support
 vim.opt.list           = true -- use special characters to represent things like tabs or trailing spaces
 vim.opt.listchars      = {
   tab = "▏ ",
@@ -330,7 +330,7 @@ end
 
 _G.mode_extended = mode_frag
 
--- 3) Git branch 
+-- 3) Git branch
 _G.status_git_branch = function()
   local br = git_branch()
   if br == "" then return "" end
