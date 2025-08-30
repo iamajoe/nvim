@@ -10,20 +10,20 @@ return {
 				lsp_fallback = true,
 				async = true,
 
-        format_after_save = {
-          timeout_ms = 500,
-          lsp_format = "fallback",
-        },
+				format_after_save = {
+					timeout_ms = 500,
+					lsp_format = "fallback",
+				},
 
 				formatters_by_ft = {
 					css = { "stylelint" },
 					-- scss = { "stylelint" },
 					javascript = { "eslint_d", "prettierd" },
-					typescript = { "eslint_d", "prettierd"  },
-					typescriptreact = { "eslint_d", "prettierd"  },
+					typescript = { "eslint_d", "prettierd" },
+					typescriptreact = { "eslint_d", "prettierd" },
 					json = { "prettierd" },
 					html = { "prettierd" },
-          rust = { "rustfmt" },
+					rust = { "rustfmt" },
 					-- nml = { "prettier" },
 					markdown = { "prettierd" },
 					yaml = { "prettierd" },
