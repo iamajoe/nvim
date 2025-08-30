@@ -1,44 +1,66 @@
 ----------------------------------------------------
+-- CHECKS
+
+-- nvim 0.12 is required for `vim.pack`.
+if vim.fn.has "nvim-0.12" == 0 then
+  error "[ERROR] Requires nvim 0.12"
+end
+
+----------------------------------------------------
 -- GENERAL SETTINGS
 
+vim.opt.mouse          = "a" -- Enable mouse support
+vim.opt.list           = true -- use special characters to represent things like tabs or trailing spaces
+vim.opt.listchars      = {
+  tab = "▏ ",
+  trail = "·",
+  extends = "»",
+  precedes = "«",
+}
+
 -- Appearance / UI
-vim.opt.number = true         -- show absolute line numbers
-vim.opt.relativenumber = true -- show relative line numbers (except current)
-vim.opt.cursorline = true     -- highlight the current line
-vim.opt.colorcolumn = "90"    -- highlight column 90
-vim.opt.signcolumn = "yes"    -- always show the sign column
-vim.opt.showtabline = 1       -- show tabline only if multiple tabs
-vim.opt.winborder = "rounded" -- use rounded window borders in popups
-vim.opt.termguicolors = true  -- enable 24-bit colors
+vim.opt.number         = true                                        -- show absolute line numbers
+vim.opt.relativenumber = true                                        -- show relative line numbers (except current)
+vim.opt.cursorline     = true                                        -- highlight the current line
+vim.opt.colorcolumn    = "90"                                        -- highlight column 90
+vim.opt.signcolumn     = "yes"                                       -- always show the sign column
+vim.opt.showtabline    = 1                                           -- show tabline only if multiple tabs
+vim.opt.winborder      = "rounded"                                   -- use rounded window borders in popups
+vim.opt.termguicolors  = true                                        -- enable 24-bit colors
+vim.o.statuscolumn     = "%=%{v:relnum == 0 ? v:lnum : v:relnum} %s" -- templates gutter
+vim.opt.laststatus     = 2                                           -- allows show status line
+vim.opt.statusline     = "[%{mode()}] %f » %F %m %= %y [%c:%l-%L]"   -- template status line
 
 -- Indentation / Tabs
-vim.opt.expandtab = true   -- convert tabs to spaces
-vim.opt.tabstop = 2        -- how many spaces a literal <Tab> shows as
-vim.opt.shiftwidth = 2     -- spaces for each step of (auto)indent
-vim.opt.softtabstop = 2    -- spaces a <Tab> counts for while editing
-vim.opt.smartindent = true -- smart auto-indenting on new lines
+vim.opt.expandtab      = true -- convert tabs to spaces
+vim.opt.tabstop        = 2    -- how many spaces a literal <Tab> shows as
+vim.opt.shiftwidth     = 2    -- spaces for each step of (auto)indent
+vim.opt.softtabstop    = 2    -- spaces a <Tab> counts for while editing
+vim.opt.smartindent    = true -- smart auto-indenting on new lines
 
 -- Search
-vim.opt.ignorecase = true -- ignore case when searching
-vim.opt.hlsearch = false  -- don't highlight search matches after Enter
-vim.opt.incsearch = true  -- show search matches as you type
+vim.opt.ignorecase     = true  -- ignore case when searching
+vim.opt.hlsearch       = false -- don't highlight search matches after Enter
+vim.opt.incsearch      = true  -- show search matches as you type
 
 -- Scrolling / navigation
-vim.opt.scrolloff = 8 -- keep 8 lines visible when scrolling
-vim.opt.wrap = false  -- don't wrap long lines
+vim.opt.scrolloff      = 8     -- keep 8 lines visible when scrolling
+vim.opt.sidescrolloff  = 8     -- Keep 8 columns left/right of cursor
+vim.opt.wrap           = false -- don't wrap long lines
 
 -- Files / persistence
-vim.opt.swapfile = false                               -- don't create swap files
-vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir" -- dir for undo history
-vim.opt.undofile = true                                -- keep undo history across sessions
-vim.opt.fileencoding = "utf-8"                         -- file encoding to use when writing
-vim.opt.isfname:append("@-@")                          -- treat "@-@" as part of filenames
-vim.opt.switchbuf = { "useopen", "usetab", "newtab" }  -- eg.: quickfix open on new tab
+vim.opt.swapfile       = false                                -- don't create swap files
+vim.opt.undodir        = os.getenv("HOME") .. "/.vim/undodir" -- dir for undo history
+vim.opt.undofile       = true                                 -- keep undo history across sessions
+vim.opt.fileencoding   = "utf-8"                              -- file encoding to use when writing
+vim.opt.isfname:append("@-@")                                 -- treat "@-@" as part of filenames
+vim.opt.switchbuf = { "useopen", "usetab", "newtab" }         -- eg.: quickfix open on new tab
 
 -- Ripgrep
 vim.opt.grepprg = "rg --vimgrep --no-heading --smart-case"
 vim.opt.grepformat = "%f:%l:%c:%m"
 
+vim.g.have_nerd_font = true
 vim.g.mapleader = " "
 
 vim.diagnostic.config({
@@ -77,7 +99,7 @@ local function toggle_qf_or_loclist()
 
   -- Case 1: already in quickfix or loclist → go back to previous buffer
   if buftype == "quickfix" then
-    vim.cmd("wincmd p")  -- jump to previous window
+    vim.cmd("wincmd p") -- jump to previous window
     return
   end
 
@@ -116,7 +138,22 @@ vim.pack.add({
   -- { src = "https://github.com/neovim/nvim-lspconfig" },
 })
 
-require "mini.pick".setup()
+require "mini.pick".setup({
+  window = {
+    config = function()
+      local height = math.floor(0.4 * vim.o.lines)
+      local width = math.floor(0.5 * vim.o.columns)
+
+      return {
+        anchor = 'NW',
+        height = height,
+        width = width,
+        row = math.floor(0.5 * (vim.o.lines - height)),
+        col = math.floor(0.5 * (vim.o.columns - width)),
+      }
+    end
+  },
+})
 -- NOTE: still deciding if i should use basic vim color groups
 -- require "nvim-treesitter.configs".setup({
 --  ensure_installed = { "typescript", "javascript", "html", "css" },
@@ -202,7 +239,7 @@ require("blink.cmp").setup({
 ----------------------------------------------------
 -- LSP
 
-vim.lsp.enable({ "lua_ls", "rust_analyzer", "ts_ls" })
+vim.lsp.enable({ "lua_ls", "rust_analyzer", "ts_ls", "gopls" })
 -- NOTE: if you don't want to use custom files but lspconfig here is an example...
 -- vim.lsp.config("lua_ls", { settings = { Lua = { ... } } })
 
@@ -212,6 +249,147 @@ vim.lsp.enable({ "lua_ls", "rust_analyzer", "ts_ls" })
 require "catppuccin".setup({ flavour = "mocha", transparent_background = true })
 vim.cmd("colorscheme catppuccin")
 vim.cmd("hi statusline guibg=NONE")
+
+-- Catppuccin Mocha palette
+local C = {
+  base = "#1e1e2e",
+  mantle = "#181825",
+  surface0 = "#313244",
+  surface1 = "#45475a",
+  text = "#cdd6f4",
+  subtext0 = "#a6adc8",
+  red = "#f38ba8",
+  peach = "#fab387",
+  yellow = "#f9e2af",
+  green = "#a6e3a1",
+  teal = "#94e2d5",
+  blue = "#89b4fa",
+  mauve = "#cba6f7"
+}
+
+----------------------------------------------------
+-- STATUS LINE
+
+-- 1) Highlight groups that fit Catppuccin nicely
+vim.api.nvim_set_hl(0, "SLModeNormal", { bg = C.green, fg = C.mantle, bold = true })
+vim.api.nvim_set_hl(0, "SLModeInsert", { bg = C.blue, fg = C.mantle, bold = true })
+vim.api.nvim_set_hl(0, "SLModeVisual", { bg = C.mauve, fg = C.mantle, bold = true })
+vim.api.nvim_set_hl(0, "SLModeReplace", { bg = C.red, fg = C.mantle, bold = true })
+vim.api.nvim_set_hl(0, "SLModeCommand", { bg = C.teal, fg = C.mantle, bold = true })
+vim.api.nvim_set_hl(0, "SLModeTerminal", { bg = C.peach, fg = C.mantle, bold = true })
+
+vim.api.nvim_set_hl(0, "SLInfo", { fg = C.text, bold = true })
+vim.api.nvim_set_hl(0, "SLDim", { fg = C.subtext0 })
+vim.api.nvim_set_hl(0, "SLBlock", { bg = C.surface0, fg = C.text })
+vim.api.nvim_set_hl(0, "SLModified", { fg = C.red, bold = true })
+vim.api.nvim_set_hl(0, "SLGit", { fg = C.teal, bold = false })
+vim.api.nvim_set_hl(0, "SLErr", { fg = C.red, bold = true })
+vim.api.nvim_set_hl(0, "SLWarn", { fg = C.peach, bold = true })
+vim.api.nvim_set_hl(0, "SLHint", { fg = C.teal, bold = true })
+vim.api.nvim_set_hl(0, "SLInfoDiag", { fg = C.blue, bold = true })
+
+-- 2) Mode (extensive labels) + dynamic highlight
+local function mode_frag()
+  local m = vim.api.nvim_get_mode().mode
+  local label = ({
+    n = "NORMAL", no = "OP-PENDING", nov = "OP-PENDING", ["noV"] = "OP-PENDING",
+    niI = "NORMAL", niR = "NORMAL", niV = "NORMAL",
+    v = "VISUAL", V = "V-LINE", ["\22"] = "V-BLOCK", -- <C-v>
+    s = "SELECT", S = "S-LINE", ["\19"] = "S-BLOCK", -- <C-s>
+    i = "INSERT", ic = "INSERT", ix = "INSERT",
+    R = "REPLACE", Rc = "REPLACE", Rv = "REPLACE",
+    c = "COMMAND", cv = "EX", ce = "EX",
+    r = "PROMPT", rm = "MORE", ["r?"] = "CONFIRM",
+    t = "TERMINAL",
+  })[m] or m
+
+  local group = ({
+    n = "SLModeNormal", niI = "SLModeNormal", niR = "SLModeNormal", niV = "SLModeNormal",
+    v = "SLModeVisual", V = "SLModeVisual", ["\22"] = "SLModeVisual",
+    s = "SLModeVisual", S = "SLModeVisual", ["\19"] = "SLModeVisual",
+    i = "SLModeInsert", ic = "SLModeInsert", ix = "SLModeInsert",
+    R = "SLModeReplace", Rc = "SLModeReplace", Rv = "SLModeReplace",
+    c = "SLModeCommand", cv = "SLModeCommand", ce = "SLModeCommand",
+    t = "SLModeTerminal",
+  })[m] or "SLModeNormal"
+
+  return string.format("%%#%s# %s %%*", group, label)
+end
+
+_G.mode_extended = mode_frag
+
+-- 3) Git branch (prefers gitsigns if present; otherwise shell fallback)
+local function git_branch()
+  -- gitsigns path (fast, async-cached)
+  local head = vim.b.gitsigns_head or (vim.b.gitsigns_status_dict and vim.b.gitsigns_status_dict.head)
+  if head and #head > 0 then return head end
+  -- fallback: cheap shell call (silenced if not a repo)
+  local ok, res = pcall(function()
+    return vim.fn.systemlist({ "git", "-C", vim.fn.expand("%:p:h"), "rev-parse", "--abbrev-ref", "HEAD" })[1]
+  end)
+  if ok and res and #res > 0 and not res:match("fatal:") then return res end
+  return ""
+end
+_G.status_git_branch = function()
+  local br = git_branch()
+  if br == "" then return "" end
+  return string.format("(%s)", br) -- "" is the branch glyph; swap if your font lacks it
+end
+
+-- 4) Diagnostics (LSP via vim.diagnostic)
+_G.status_diags = function()
+  local bufnr = 0
+  local function count(sev) return #vim.diagnostic.get(bufnr, { severity = sev }) end
+  local e = count(vim.diagnostic.severity.ERROR)
+  local w = count(vim.diagnostic.severity.WARN)
+  local h = count(vim.diagnostic.severity.HINT)
+  local i = count(vim.diagnostic.severity.INFO)
+
+  local parts = {}
+  if e > 0 then table.insert(parts, string.format("[%%#SLErr#Errors: %d%%*]", e)) end
+  if w > 0 then table.insert(parts, string.format("[%%#SLWarn#Warnings: %d%%*]", w)) end
+  if i > 0 then table.insert(parts, string.format("[%%#SLInfoDiag#Info: %d%%*]", i)) end
+  if h > 0 then table.insert(parts, string.format("[%%#SLHint#Hints: %d%%*]", h)) end
+  return table.concat(parts, " ")
+end
+
+-- 5) finally set the status line
+vim.opt.laststatus = 3 -- or 3 for a single global bar
+vim.opt.statusline = table.concat({
+  "%{%v:lua.mode_extended()%} ",
+  "%#SLModified#%m%*",                       -- '+' when modified
+  " %#SLInfo#%f%* ",                         -- filename
+  "» %F ",                                   -- full path (bold)
+  "%#SLGit#%{v:lua.status_git_branch()}%* ", -- git branch (if any)
+  "%=",                                      -- right align after this
+  "%{%v:lua.status_diags()%} ",              -- diagnostics (only shows existing severities)
+  "%#SLDim#%y%* ",                           -- filetype, dimmed
+  "[%c:%l-%#SLDim#%L%*]",                    -- column: line-total block
+})
+
+----------------------------------------------------
+-- COMMENT HIGHLIGHTS
+
+-- TODO(joe): Wow!
+-- NOTE(joe): Look at that!
+-- IMPORTANT(joe): Awsome Highlighting!
+-- STUDY(joe): Im so good at neovim config!
+vim.api.nvim_set_hl(0, "Todo", { underline = false, fg = C.red })
+vim.api.nvim_set_hl(0, "Note", { underline = false, fg = C.green })
+vim.api.nvim_set_hl(0, "Study", { underline = false, fg = C.blue })
+vim.api.nvim_set_hl(0, "Important", { underline = false, fg = C.mauve })
+
+local highlightAutoCmds = vim.api.nvim_create_augroup('highlightAutoCmds', { clear = true })
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+  pattern = "*",
+  group = highlightAutoCmds,
+  callback = function()
+    vim.fn.matchadd("Todo", "TODO")
+    vim.fn.matchadd("Note", "NOTE")
+    vim.fn.matchadd("Study", "STUDY")
+    vim.fn.matchadd("Important", "IMPORTANT")
+  end
+})
 
 ----------------------------------------------------
 -- CMDS
