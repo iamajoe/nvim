@@ -221,17 +221,14 @@ require "nvim-treesitter.configs".setup({
     "lua",
   },
 
-  -- optional: download any missing parser automatically when you open a file
   auto_install = true,
-
   highlight = {
     enable = true,
-    -- stay lean: don’t run Vim’s regex highlighter alongside TS
     additional_vim_regex_highlighting = false,
-    -- optional: turn TS highlight off for very large files
-    disable = function(lang, buf)
+    -- turn TS highlight off for very large files
+    disable = function(_lang, buf)
       local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-      return ok and stats and stats.size > 500 * 1024 -- >500KB
+      return ok and stats and stats.size > 1000 * 1024 -- > 1MB
     end,
   },
 })
