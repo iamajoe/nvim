@@ -29,7 +29,7 @@ vim.opt.listchars             = {
   extends = "»",
   precedes = "«",
 }
-vim.opt.showmatch             = true  -- show matching bracket
+vim.opt.showmatch             = false -- show matching bracket
 vim.opt.showmode              = false -- dont show mode on cmdline
 
 -- Performance improvements
@@ -85,7 +85,7 @@ vim.g.mapleader = " "
 vim.diagnostic.config({
   signs = {
     linehl = {
-      [vim.diagnostic.severity.ERROR] = 'ErrorMsg',
+      -- [vim.diagnostic.severity.ERROR] = 'ErrorMsg',
     },
     numhl = {
       [vim.diagnostic.severity.WARN] = 'WarningMsg',
@@ -94,8 +94,9 @@ vim.diagnostic.config({
   },
   underline = true,
   update_in_insert = false,
-  virtual_lines = { current_line = true, },
-  virtual_text = false,
+  -- virtual_lines = { current_line = true, },
+  virtual_lines = false,
+  virtual_text = { current_line = true, },
 })
 
 ----------------------------------------------------
@@ -180,11 +181,9 @@ vim.pack.add({
   { src = "https://github.com/stevearc/oil.nvim" },                        -- file explorer
   { src = "https://github.com/echasnovski/mini.pick" },                    -- pick files
   { src = "https://github.com/numToStr/Comment.nvim" },                    -- toggle comment
-  { src = "https://github.com/Saghen/blink.cmp",     version = "v1.6.0" }, -- autocompletion
+  { src = "https://github.com/Saghen/blink.cmp",                version = "v1.6.0" }, -- autocompletion
   { src = "https://github.com/catppuccin/nvim" },                          -- theme
-
-  -- NOTE: still deciding if i should use basic vim color groups
-  -- { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
   -- NOTE: decided to use manual config per language that way i have more control
   --       i copy the files from lspconfig whenever i need them and it is one less
   --       dependency. it is not as simple as using the dependency though because
@@ -208,11 +207,34 @@ require "mini.pick".setup({
     end
   },
 })
--- NOTE: still deciding if i should use basic vim color groups
--- require "nvim-treesitter.configs".setup({
---  ensure_installed = { "typescript", "javascript", "html", "css" },
---  highlight = { enable = true },
--- })
+
+require "nvim-treesitter.configs".setup({
+  ensure_installed = { 
+    "typescript", 
+    "javascript", 
+    "html", 
+    "css", 
+    "go", 
+    "rust", 
+    "toml", 
+    "json", 
+    "lua",
+  },
+
+  -- optional: download any missing parser automatically when you open a file
+  auto_install = true,
+
+  highlight = {
+    enable = true,
+    -- stay lean: don’t run Vim’s regex highlighter alongside TS
+    additional_vim_regex_highlighting = false,
+    -- optional: turn TS highlight off for very large files
+    disable = function(lang, buf)
+      local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+      return ok and stats and stats.size > 500 * 1024 -- >500KB
+    end,
+  },
+})
 
 require "oil".setup({
   default_file_explorer = true,
@@ -293,7 +315,7 @@ require("blink.cmp").setup({
 ----------------------------------------------------
 -- LSP
 
-vim.lsp.enable({ "lua_ls", "rust_analyzer", "ts_ls", "gopls" })
+vim.lsp.enable({ "lua_ls", "rust_analyzer", "ts_ls", "gopls", "eslint" })
 -- NOTE: if you don't want to use custom files but lspconfig here is an example...
 -- vim.lsp.config("lua_ls", { settings = { Lua = { ... } } })
 
@@ -506,6 +528,8 @@ vim.keymap.set("n", "<leader>e", ":Oil<CR>", { desc = "File explorer: Oil" })
 
 vim.keymap.set({ "n", "v", "x" }, "<leader>y", '"+y<CR>', { desc = "Clipboard: Yank" })
 vim.keymap.set({ "n", "v", "x" }, "<leader>d", '"+d<CR>', { desc = "Clipboard: Delete" })
+vim.keymap.set("v", "p", [["_dP]], { desc = "copy without losing last yield" })
+
 
 -- project search
 vim.keymap.set("n", "<leader>ps", function()
