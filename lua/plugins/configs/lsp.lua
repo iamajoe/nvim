@@ -34,7 +34,7 @@ lspconfig.ts_ls.setup({
 	capabilities = default_capabilities,
 	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
 	settings = {
-		maxTsServerMemory = 4096,
+		maxTsServerMemory = 8192,
 	},
 	flags = {
 		debounce_text_changes = 1000,
