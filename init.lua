@@ -85,7 +85,7 @@ vim.g.mapleader = " "
 vim.diagnostic.config({
   signs = {
     linehl = {
-      [vim.diagnostic.severity.ERROR] = 'ErrorMsg',
+      -- [vim.diagnostic.severity.ERROR] = 'ErrorMsg',
     },
     numhl = {
       [vim.diagnostic.severity.WARN] = 'WarningMsg',
