@@ -720,11 +720,18 @@ vim.keymap.set("n", "N", "Nzzzv")
 -- buffer navigation
 vim.keymap.set("n", "<leader>bh", "<cmd>bprevious<CR>", { desc = "Buffer: previous" })
 vim.keymap.set("n", "<leader>bl", "<cmd>bnext<CR>", { desc = "Buffer: next" })
-vim.keymap.set("n", "<leader>bw", "<cmd>bdelete<CR>", { desc = "Buffer: close" })
+vim.keymap.set("n", "<leader>bw", function()
+  if vim.fn.winnr('$') > 1 then
+    vim.cmd("close") -- More than one window -> close split
+  else
+    vim.cmd("bdelete") -- Only one window -> delete buffer
+  end
+end, { desc = "Buffer: close" })
 vim.keymap.set("n", "<leader>bwa", "<cmd>%bd|e#<CR>", { desc = "Buffer: close all other" })
 vim.keymap.set("n", "<leader>br", "<cmd>checktime<CR>", { desc = "Buffer: refresh" })
 vim.keymap.set("n", "<leader>ba", ":Pick buffers<CR>", { desc = "Buffer: list open" })
-vim.keymap.set("n", "<C-w>a", "<cmd>vsplit<CR>", { desc = "Buffer: split" })
+vim.keymap.set("n", "<leader>bs", "<cmd>vsplit<CR>", { desc = "Buffer: split" })
+vim.keymap.set("n", "<leader>bc", "<cmd>wincmd w<CR>", { desc = "Buffer: cycle split" })
 
 vim.keymap.set({ "n", "v", "x" }, "<leader>s", ":e #<CR>", { desc = "File: Edit alternate file" })
 -- TODO: still wondering if i like this one
