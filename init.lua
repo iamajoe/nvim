@@ -178,17 +178,26 @@ end
 -- PLUGINS
 
 vim.pack.add({
-  { src = "https://github.com/stevearc/oil.nvim" },                        -- file explorer
-  { src = "https://github.com/echasnovski/mini.pick" },                    -- pick files
-  { src = "https://github.com/numToStr/Comment.nvim" },                    -- toggle comment
-  { src = "https://github.com/Saghen/blink.cmp",                version = "v1.6.0" }, -- autocompletion
-  { src = "https://github.com/catppuccin/nvim" },                          -- theme
-  { src = "https://github.com/nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+  { src = "https://github.com/stevearc/oil.nvim" },                                               -- file explorer
+  { src = "https://github.com/echasnovski/mini.pick" },                                           -- pick files
+  { src = "https://github.com/numToStr/Comment.nvim" },                                           -- toggle comment
+  { src = "https://github.com/Saghen/blink.cmp",                            version = "v1.6.0" }, -- autocompletion
+  { src = "https://github.com/catppuccin/nvim" },                                                 -- theme
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter",             build = ":TSUpdate" },
   -- NOTE: decided to use manual config per language that way i have more control
   --       i copy the files from lspconfig whenever i need them and it is one less
   --       dependency. it is not as simple as using the dependency though because
   --       i have updated the configuration files with tweaks. check that first
   -- { src = "https://github.com/neovim/nvim-lspconfig" },
+
+  -- NOTE: from now on these are nice to haves that we probably dont need
+  --       they help out for example with project search
+  --       could use it as well instead of pick, but prefer the pick for files
+  --       telescope is nice because of previews for example
+  { src = "https://github.com/nvim-lua/plenary.nvim" },
+  { src = "https://github.com/nvim-telescope/telescope.nvim" },
+  { src = "https://github.com/nvim-telescope/telescope-live-grep-args.nvim" },
+  { src = "https://github.com/MeanderingProgrammer/harpoon-core.nvim" }, -- mark files for easy access
 })
 
 require "mini.pick".setup({
@@ -209,15 +218,15 @@ require "mini.pick".setup({
 })
 
 require "nvim-treesitter.configs".setup({
-  ensure_installed = { 
-    "typescript", 
-    "javascript", 
-    "html", 
-    "css", 
-    "go", 
-    "rust", 
-    "toml", 
-    "json", 
+  ensure_installed = {
+    "typescript",
+    "javascript",
+    "html",
+    "css",
+    "go",
+    "rust",
+    "toml",
+    "json",
     "lua",
   },
 
@@ -308,6 +317,10 @@ require("blink.cmp").setup({
   },
   -- sources = { default = { "lsp", "path", "buffer", "snippets" } },
 })
+
+require("telescopeconfig")
+
+require('harpoon-core').setup()
 
 ----------------------------------------------------
 -- LSP
@@ -480,7 +493,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
         vim.tbl_extend("force", opts, { desc = "LSP: Format buffer" }))
     end
 
-    -- TODO: action seems to not be working?!
     if supports("textDocument/codeAction") then
       local code_action = function()
         -- use `{}` to avoid “cursor outside buffer” at attach-time
@@ -521,14 +533,17 @@ vim.keymap.set("n", "<leader>w", ":write<CR>", { desc = "File: Save" })
 
 vim.keymap.set("n", "<leader>pf", ":Pick files<CR>", { desc = "Picker: Files" })
 vim.keymap.set("n", "<leader>h", ":Pick help<CR>", { desc = "Picker: Help" })
-vim.keymap.set("n", "<leader>e", ":Oil<CR>", { desc = "File explorer: Oil" })
+vim.keymap.set("n", "<leader>fe", ":Oil<CR>", { desc = "File explorer: Oil" })
 
 vim.keymap.set({ "n", "v", "x" }, "<leader>y", '"+y<CR>', { desc = "Clipboard: Yank" })
 vim.keymap.set({ "n", "v", "x" }, "<leader>d", '"+d<CR>', { desc = "Clipboard: Delete" })
 vim.keymap.set("v", "p", [["_dP]], { desc = "copy without losing last yield" })
 
-
 -- project search
+-- NOTE: this is the old version
+-- vim.keymap.set("n", "<leader>ps", function()
+-- 	builtin.grep_string({ search = vim.fn.input("Grep > ");
+-- end, { desc = "Project search" })
 vim.keymap.set("n", "<leader>ps", function()
   local query = vim.fn.input("Search query > ")
   if query == "" then return end
@@ -552,11 +567,25 @@ vim.keymap.set("n", "<leader>ps", function()
   end
 
   local results = vim.fn.systemlist(cmd)
-  local root = find_git_root()
-  vim.fn.setqflist({}, "r", { title = "Ripgrep (" .. root .. ")", lines = results })
 
-  -- TODO: open on same buffer
-  vim.cmd("copen")
+  -- send to telescope
+  local pickers = require("telescope.pickers")
+  local finders = require("telescope.finders")
+  local conf = require("telescope.config").values
+  local make_entry = require("telescope.make_entry")
+  pickers.new({}, {
+    prompt_title = "Project search",
+    finder = finders.new_table({
+      results = results,                            -- your rg lines
+      entry_maker = make_entry.gen_from_vimgrep({}) -- parse file:lnum:col:text
+    }),
+    previewer = conf.grep_previewer({}),
+    sorter = conf.generic_sorter({}),
+  }):find()
+
+  -- NOTE: if no telescope, use this
+  -- vim.fn.setqflist({}, "r", { title = "Project search", lines = results })
+  -- vim.cmd("copen")
 end, { desc = "Project: Search" })
 
 vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, { desc = "LSP: Show signature help" })
@@ -592,7 +621,9 @@ vim.keymap.set("n", "<leader>bl", "<cmd>bnext<CR>", { desc = "Buffer: next" })
 vim.keymap.set("n", "<leader>bw", "<cmd>bdelete<CR>", { desc = "Buffer: close" })
 vim.keymap.set("n", "<leader>bwa", "<cmd>%bd|e#<CR>", { desc = "Buffer: close all other" })
 vim.keymap.set("n", "<leader>br", "<cmd>checktime<CR>", { desc = "Buffer: refresh" })
+vim.keymap.set("n", "<leader>ba", ":Pick buffers<CR>", { desc = "Buffer: list open" })
 vim.keymap.set("n", "<C-w>a", "<cmd>vsplit<CR>", { desc = "Buffer: split" })
+
 vim.keymap.set({ "n", "v", "x" }, "<leader>s", ":e #<CR>", { desc = "File: Edit alternate file" })
 -- TODO: still wondering if i like this one
 vim.keymap.set({ "n", "v", "x" }, "<leader>S", ":sf #<CR>", { desc = "File: Split with alternate file" })
@@ -605,3 +636,10 @@ vim.keymap.set(
   '<ESC><CMD>lua require("Comment.api").locked("toggle.linewise")(vim.fn.visualmode())<CR>',
   { desc = "Comment: Toggle block" }
 )
+
+vim.keymap.set("n", "<leader>e", function()
+  require('harpoon-core').toggle_quick_menu()
+end)
+vim.keymap.set("n", "<leader>a", function()
+  require('harpoon-core').add_file()
+end)
