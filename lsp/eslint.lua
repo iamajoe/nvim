@@ -120,7 +120,8 @@ return {
     quiet = false,
     onIgnoredFiles = 'off',
     rulesCustomizations = {},
-    run = 'onSave', -- original: 'onType',
+    run = 'onSave',
+    -- run = 'onType', -- original
     problems = {
       shortenToSingleLine = false,
     },
