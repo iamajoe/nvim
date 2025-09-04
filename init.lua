@@ -754,3 +754,5 @@ end)
 vim.keymap.set("n", "<leader>a", function()
   require('harpoon-core').add_file()
 end)
+
+vim.keymap.set("n", "<leader>svl", ":lua vim.cmd(\"edit \" .. vim.lsp.get_log_path())<CR>", { desc = "Vim: show logs" })
