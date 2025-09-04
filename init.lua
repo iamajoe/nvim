@@ -184,6 +184,8 @@ vim.pack.add({
   { src = "https://github.com/Saghen/blink.cmp",                            version = "v1.6.0" }, -- autocompletion
   { src = "https://github.com/catppuccin/nvim" },                                                 -- theme
   { src = "https://github.com/nvim-treesitter/nvim-treesitter",             build = ":TSUpdate" },
+  { src = "https://github.com/mrcjkb/rustaceanvim" },                                              -- lspConfig is not good enough,
+
   -- NOTE: decided to use manual config per language that way i have more control
   --       i copy the files from lspconfig whenever i need them and it is one less
   --       dependency. it is not as simple as using the dependency though because
@@ -323,7 +325,7 @@ require('harpoon-core').setup()
 ----------------------------------------------------
 -- LSP
 
-vim.lsp.enable({ "lua_ls", "rust_analyzer", "ts_ls", "gopls", "eslint" })
+vim.lsp.enable({ "lua_ls", "ts_ls", "gopls", "eslint" })
 -- NOTE: if you don't want to use custom files but lspconfig here is an example...
 -- vim.lsp.config("lua_ls", { settings = { Lua = { ... } } })
 
@@ -409,8 +411,8 @@ require("telescope").setup({
         ["<C-h>"] = "which_key",
         ["<c-d>"] = require("telescope.actions").delete_buffer,
         ["<C-r>"] = ts_search_replace,
-        ["<C-p>"] = false,                           -- disable movement
-        ["<C-n>"] = false,                           -- disable movement
+        ["<C-p>"] = false,                              -- disable movement
+        ["<C-n>"] = false,                              -- disable movement
         ["<C-j>"] = ts_actions.move_selection_next,     -- move down
         ["<C-k>"] = ts_actions.move_selection_previous, -- move up
         ["<C-o>"] = ts_actions.select_default,          -- enter
@@ -722,7 +724,7 @@ vim.keymap.set("n", "<leader>bh", "<cmd>bprevious<CR>", { desc = "Buffer: previo
 vim.keymap.set("n", "<leader>bl", "<cmd>bnext<CR>", { desc = "Buffer: next" })
 vim.keymap.set("n", "<leader>bw", function()
   if vim.fn.winnr('$') > 1 then
-    vim.cmd("close") -- More than one window -> close split
+    vim.cmd("close")   -- More than one window -> close split
   else
     vim.cmd("bdelete") -- Only one window -> delete buffer
   end
