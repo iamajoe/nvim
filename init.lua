@@ -184,7 +184,7 @@ vim.pack.add({
   { src = "https://github.com/Saghen/blink.cmp",                            version = "v1.6.0" }, -- autocompletion
   { src = "https://github.com/catppuccin/nvim" },                                                 -- theme
   { src = "https://github.com/nvim-treesitter/nvim-treesitter",             build = ":TSUpdate" },
-  { src = "https://github.com/mrcjkb/rustaceanvim" },                                              -- lspConfig is not good enough,
+  { src = "https://github.com/mrcjkb/rustaceanvim" },                                             -- lspConfig is not good enough,
 
   -- NOTE: decided to use manual config per language that way i have more control
   --       i copy the files from lspconfig whenever i need them and it is one less
@@ -323,11 +323,50 @@ require("blink.cmp").setup({
 require('harpoon-core').setup()
 
 ----------------------------------------------------
--- LSP
+-- LSP / LANGUAGE SPECIFIC
 
 vim.lsp.enable({ "lua_ls", "ts_ls", "gopls", "eslint" })
 -- NOTE: if you don't want to use custom files but lspconfig here is an example...
 -- vim.lsp.config("lua_ls", { settings = { Lua = { ... } } })
+
+vim.g.rustaceanvim = {
+  server = {
+    settings = {
+      ["rust-analyzer"] = {
+        cargo = {
+          allFeatures = true,               -- or set `features = { "your_feature" }`
+          buildScripts = { enable = true }, -- better proc-macro & env![] support
+          targetDir = "target",             -- keeps build artifacts in one place
+        },
+        checkOnSave = true,
+        check = {
+          command = "clippy",
+          -- extra_args = { --[[ ... ]] },
+        },
+        diagnostics = {
+          enable = true,
+          experimental = { enable = true }, -- extra hints (usually helpful)
+        },
+        inlayHints = {
+          lifetimeElisionHints = { enable = "skip_trivial" },
+          parameterHints = { enable = true },
+          typeHints = { enable = true },
+        },
+        completion = {
+          autoimport = { enable = true },
+          postfix = { enable = true },
+        },
+        imports = {
+          granularity = { group = "module" },
+          prefix = "self",
+        },
+        typing = { autoClosingAngleBrackets = { enable = true } },
+        lens = { enable = true }, -- show run/test links above funcs
+        hover = { actions = { references = { enable = true } } },
+      },
+    },
+  },
+}
 
 ----------------------------------------------------
 -- TELESCOPE
