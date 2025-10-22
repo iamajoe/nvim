@@ -450,8 +450,8 @@ require("telescope").setup({
         ["<C-h>"] = "which_key",
         ["<c-d>"] = require("telescope.actions").delete_buffer,
         ["<C-r>"] = ts_search_replace,
-        ["<C-p>"] = false,                              -- disable movement
-        ["<C-n>"] = false,                              -- disable movement
+        ["<C-p>"] = ts_actions.move_selection_previous, -- move up 
+        ["<C-n>"] = ts_actions.move_selection_next,     -- move down 
         ["<C-j>"] = ts_actions.move_selection_next,     -- move down
         ["<C-k>"] = ts_actions.move_selection_previous, -- move up
         ["<C-o>"] = ts_actions.select_default,          -- enter
@@ -584,10 +584,12 @@ vim.opt.statusline = table.concat({
 ----------------------------------------------------
 -- COMMENT HIGHLIGHTS
 
+-- deprecated(joe): it has changed
 -- TODO(joe): Wow!
 -- NOTE(joe): Look at that!
 -- IMPORTANT(joe): Awsome Highlighting!
 -- STUDY(joe): Im so good at neovim config!
+vim.api.nvim_set_hl(0, "Deprecated", { underline = false, fg = C.red })
 vim.api.nvim_set_hl(0, "Todo", { underline = false, fg = C.red })
 vim.api.nvim_set_hl(0, "Note", { underline = false, fg = C.green })
 vim.api.nvim_set_hl(0, "Study", { underline = false, fg = C.blue })
@@ -598,6 +600,9 @@ vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
   pattern = "*",
   group = highlightAutoCmds,
   callback = function()
+    vim.fn.matchadd("Deprecated", "deprecated")
+    vim.fn.matchadd("Deprecated", "DEPRECATED")
+    vim.fn.matchadd("Deprecated", "@deprecated")
     vim.fn.matchadd("Todo", "TODO")
     vim.fn.matchadd("Note", "NOTE")
     vim.fn.matchadd("Study", "STUDY")
