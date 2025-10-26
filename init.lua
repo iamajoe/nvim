@@ -444,9 +444,11 @@ require("telescope").setup({
     -- config_key = value,
     mappings = {
       n = {
+        ["<C-c>"] = require("telescope.actions").close,
         ["<c-d>"] = require("telescope.actions").delete_buffer,
       }, -- n
       i = {
+        ["<C-c>"] = require("telescope.actions").close,
         ["<C-h>"] = "which_key",
         ["<c-d>"] = require("telescope.actions").delete_buffer,
         ["<C-r>"] = ts_search_replace,
@@ -627,18 +629,32 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
 
     if supports("textDocument/definition") then
-      vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition,
-        vim.tbl_extend("force", opts, { desc = "LSP: Go to definition" }))
+      vim.keymap.set("n", "<leader>od", vim.lsp.buf.definition,
+        vim.tbl_extend("force", opts, { desc = "key-> LSP: Go to definition" }))
     end
+
+    vim.keymap.set("n", "<leader>or", function() 
+      local builtin = require("telescope.builtin")
+      builtin.lsp_references({
+        include_declaration = true,   -- include definitions
+        include_current_line = true,  -- include the reference under cursor
+        show_line = true,
+      })
+    end, vim.tbl_extend("force", opts, { desc = "key-> LSP: Show references" }))
+
+    vim.keymap.set("n", "<leader>ow", function() 
+      local builtin = require("telescope.builtin")
+      builtin.diagnostics({})
+    end, vim.tbl_extend("force", opts, { desc = "key-> LSP: Show diagnostics" }))
 
     if supports("textDocument/hover") then
       vim.keymap.set("n", "K", vim.lsp.buf.hover,
-        vim.tbl_extend("force", opts, { desc = "LSP: Hover docs" }))
+        vim.tbl_extend("force", opts, { desc = "key-> LSP: Hover docs" }))
     end
 
     if supports("textDocument/formatting") or supports("textDocument/rangeFormatting") then
       vim.keymap.set("n", "<leader>ff", function() vim.lsp.buf.format({ async = false }) end,
-        vim.tbl_extend("force", opts, { desc = "LSP: Format buffer" }))
+        vim.tbl_extend("force", opts, { desc = "key-> LSP: Format buffer" }))
     end
 
     if supports("textDocument/codeAction") then
@@ -646,10 +662,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
         -- use `{}` to avoid “cursor outside buffer” at attach-time
         vim.lsp.buf.code_action({ context = { only = { "quickfix" } } })
       end
-      vim.keymap.set("n", "<leader>vca", code_action,
-        vim.tbl_extend("force", opts, { desc = "LSP: Code action (fix diagnostics)" }))
-      vim.keymap.set("v", "<leader>vca", code_action,
-        vim.tbl_extend("force", opts, { desc = "LSP: Code action (range quickfix)" }))
+      vim.keymap.set("n", "<leader>oca", code_action,
+        vim.tbl_extend("force", opts, { desc = "key-> LSP: Code action (fix diagnostics)" }))
+      vim.keymap.set("v", "<leader>oca", code_action,
+        vim.tbl_extend("force", opts, { desc = "key-> LSP: Code action (range quickfix)" }))
     end
   end,
 })
@@ -677,22 +693,22 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 ----------------------------------------------------
 -- KEYMAPS
 
-vim.keymap.set("n", "<leader>w", ":write<CR>", { desc = "File: Save" })
+vim.keymap.set("n", "<leader>w", ":write<CR>", { desc = "key-> File: Save" })
 
-vim.keymap.set("n", "<leader>pf", ":Pick files<CR>", { desc = "Picker: Files" })
-vim.keymap.set("n", "<leader>h", ":Pick help<CR>", { desc = "Picker: Help" })
-vim.keymap.set("n", "<leader>fe", ":Oil<CR>", { desc = "File explorer: Oil" })
+vim.keymap.set("n", "<leader>of", ":Pick files<CR>", { desc = "key-> Picker: Files" })
+vim.keymap.set("n", "<leader>h", ":Pick help<CR>", { desc = "key-> Picker: Help" })
+vim.keymap.set("n", "<leader>oe", ":Oil<CR>", { desc = "key-> File explorer: Oil" })
 
-vim.keymap.set({ "n", "v", "x" }, "<leader>y", '"+y<CR>', { desc = "Clipboard: Yank" })
-vim.keymap.set({ "n", "v", "x" }, "<leader>d", '"+d<CR>', { desc = "Clipboard: Delete" })
-vim.keymap.set("v", "p", [["_dP]], { desc = "copy without losing last yield" })
+vim.keymap.set({ "n", "v", "x" }, "<leader>y", '"+y<CR>', { desc = "key-> Clipboard: Yank" })
+vim.keymap.set({ "n", "v", "x" }, "<leader>d", '"+d<CR>', { desc = "key-> Clipboard: Delete" })
+vim.keymap.set("v", "p", [["_dP]], { desc = "key-> copy without losing last yield" })
 
 -- project search
 -- NOTE: this is the old version
 -- vim.keymap.set("n", "<leader>ps", function()
 -- 	builtin.grep_string({ search = vim.fn.input("Grep > ");
--- end, { desc = "Project search" })
-vim.keymap.set("n", "<leader>ps", function()
+-- end, { desc = "key-> Project search" })
+vim.keymap.set("n", "<leader>os", function()
   local query = vim.fn.input("Search query > ")
   if query == "" then return end
 
@@ -734,28 +750,28 @@ vim.keymap.set("n", "<leader>ps", function()
   -- NOTE: if no telescope, use this
   -- vim.fn.setqflist({}, "r", { title = "Project search", lines = results })
   -- vim.cmd("copen")
-end, { desc = "Project: Search" })
+end, { desc = "key-> Project: Search" })
 
-vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, { desc = "LSP: Show signature help" })
+vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, { desc = "key-> LSP: Show signature help" })
 
 -- diagnostics
-vim.keymap.set("n", "[d", function() vim.diagnostic.jump { count = -1 } end, { desc = "Diagnostics: Prev" })
-vim.keymap.set("n", "]d", function() vim.diagnostic.jump { count = 1 } end, { desc = "Diagnostics: Next" })
-vim.keymap.set("n", "<leader>vd", vim.diagnostic.open_float, { desc = "Diagnostics: View" })
--- vim.keymap.set("n", "<leader>vca", vim.lsp.buf.code_action(), { desc = "Diagnostics: Action")
-vim.keymap.set("n", "<leader>do", function() vim.diagnostic.open_float(nil, { scope = "line" }) end,
-  { desc = "Diagnostics: Show line" })
-vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "Diagnostics: Loclist" })
+vim.keymap.set("n", "[d", function() vim.diagnostic.jump { count = -1 } end, { desc = "key-> Diagnostics: Prev" })
+vim.keymap.set("n", "]d", function() vim.diagnostic.jump { count = 1 } end, { desc = "key-> Diagnostics: Next" })
+vim.keymap.set("n", "<leader>vd", vim.diagnostic.open_float, { desc = "key-> Diagnostics: View" })
+-- vim.keymap.set("n", "<leader>vca", vim.lsp.buf.code_action(), { desc = "key-> Diagnostics: Action")
+-- vim.keymap.set("n", "<leader>do", function() vim.diagnostic.open_float(nil, { scope = "line" }) end,
+  -- { desc = "key-> Diagnostics: Show line" })
+vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "key-> Diagnostics: Loclist" })
 
-vim.keymap.set("n", "J", "mzJ`z", { desc = "join lines" })
+vim.keymap.set("n", "J", "mzJ`z", { desc = "key-> join lines" })
 
 vim.keymap.set("n", "p", "]p")  -- indent pasted text
 vim.keymap.set("v", ">", ">gv") -- keep indented text selected
 vim.keymap.set("v", "<", "<gv") -- keep indented text selected
 
 -- quickfix / loclist
-vim.keymap.set("n", "<leader>cc", "<cmd>lclose<CR><cmd>cclose<CR>", { desc = "Close loclist and quickfix" })
-vim.keymap.set("n", "<leader>cv", toggle_qf_or_loclist, { desc = "Toggle focus loclist/quickfix" })
+vim.keymap.set("n", "<leader>cc", "<cmd>lclose<CR><cmd>cclose<CR>", { desc = "key-> Close loclist and quickfix" })
+vim.keymap.set("n", "<leader>cv", toggle_qf_or_loclist, { desc = "key-> Toggle focus loclist/quickfix" })
 
 -- Keep cursor in the middle when jumping
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
@@ -764,34 +780,35 @@ vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
 -- buffer navigation
-vim.keymap.set("n", "<leader>bh", "<cmd>bprevious<CR>", { desc = "Buffer: previous" })
-vim.keymap.set("n", "<leader>bl", "<cmd>bnext<CR>", { desc = "Buffer: next" })
+vim.keymap.set("n", "<leader>bh", "<cmd>bprevious<CR>", { desc = "key-> Buffer: previous" })
+vim.keymap.set("n", "<leader>bl", "<cmd>bnext<CR>", { desc = "key-> Buffer: next" })
 vim.keymap.set("n", "<leader>bw", function()
   if vim.fn.winnr('$') > 1 then
     vim.cmd("close")   -- More than one window -> close split
   else
     vim.cmd("bdelete") -- Only one window -> delete buffer
   end
-end, { desc = "Buffer: close" })
-vim.keymap.set("n", "<leader>bwa", "<cmd>%bd|e#<CR>", { desc = "Buffer: close all other" })
-vim.keymap.set("n", "<leader>br", "<cmd>checktime<CR>", { desc = "Buffer: refresh" })
-vim.keymap.set("n", "<leader>ba", ":Pick buffers<CR>", { desc = "Buffer: list open" })
-vim.keymap.set("n", "<leader>bs", "<cmd>vsplit<CR>", { desc = "Buffer: split" })
-vim.keymap.set("n", "<leader>bc", "<cmd>wincmd w<CR>", { desc = "Buffer: cycle split" })
+end, { desc = "key-> Buffer: close" })
+vim.keymap.set("n", "<leader>bwa", "<cmd>%bd|e#<CR>", { desc = "key-> Buffer: close all other" })
+vim.keymap.set("n", "<leader>br", "<cmd>checktime<CR>", { desc = "key-> Buffer: refresh" })
+vim.keymap.set("n", "<leader>ba", ":Pick buffers<CR>", { desc = "key-> Buffer: list open" })
+vim.keymap.set("n", "<leader>bs", "<cmd>vsplit<CR>", { desc = "key-> Buffer: split" })
+vim.keymap.set("n", "<leader>bc", "<cmd>wincmd w<CR>", { desc = "key-> Buffer: cycle split" })
 
-vim.keymap.set({ "n", "v", "x" }, "<leader>s", ":e #<CR>", { desc = "File: Edit alternate file" })
+vim.keymap.set({ "n", "v", "x" }, "<leader>s", ":e #<CR>", { desc = "key-> File: Edit alternate file" })
 -- TODO: still wondering if i like this one
-vim.keymap.set({ "n", "v", "x" }, "<leader>S", ":sf #<CR>", { desc = "File: Split with alternate file" })
+vim.keymap.set({ "n", "v", "x" }, "<leader>S", ":sf #<CR>", { desc = "key-> File: Split with alternate file" })
 
 -- Toggle comment
-vim.keymap.set("n", "<leader>/", require("Comment.api").toggle.linewise.current, { desc = "Comment:Toggle line" })
+vim.keymap.set("n", "<leader>/", require("Comment.api").toggle.linewise.current, { desc = "key-> Comment:Toggle line" })
 vim.keymap.set(
   "x",
   "<leader>/",
   '<ESC><CMD>lua require("Comment.api").locked("toggle.linewise")(vim.fn.visualmode())<CR>',
-  { desc = "Comment: Toggle block" }
+  { desc = "key-> Comment: Toggle block" }
 )
 
+-- Harpoon
 vim.keymap.set("n", "<leader>e", function()
   require('harpoon-core').toggle_quick_menu()
 end)
@@ -799,4 +816,12 @@ vim.keymap.set("n", "<leader>a", function()
   require('harpoon-core').add_file()
 end)
 
-vim.keymap.set("n", "<leader>svl", ":lua vim.cmd(\"edit \" .. vim.lsp.get_log_path())<CR>", { desc = "Vim: show logs" })
+vim.keymap.set("n", "<leader>ovl", ":lua vim.cmd(\"edit \" .. vim.lsp.get_log_path())<CR>", { desc = "key-> Vim: show logs" })
+
+vim.keymap.set("n", "<leader>ok", function()
+  require("telescope.builtin").keymaps({
+    sorter = require("telescope.sorters").get_generic_fuzzy_sorter({}),
+    sorting_strategy = "ascending",
+    prompt_title = "Keymaps (sorted A→Z)",
+  })
+end, { desc = "joe → Show keymaps (sorted)" })
