@@ -183,8 +183,9 @@ vim.pack.add({
   { src = "https://github.com/numToStr/Comment.nvim" },                                           -- toggle comment
   { src = "https://github.com/Saghen/blink.cmp",                            version = "v1.6.0" }, -- autocompletion
   { src = "https://github.com/catppuccin/nvim" },                                                 -- theme
-  { src = "https://github.com/nvim-treesitter/nvim-treesitter",             build = ":TSUpdate" },
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
   { src = "https://github.com/mrcjkb/rustaceanvim" },                                             -- lspConfig is not good enough,
+  { src = "https://github.com/chrisgrieser/nvim-early-retirement" },                              -- remove not used buffers
 
   -- NOTE: decided to use manual config per language that way i have more control
   --       i copy the files from lspconfig whenever i need them and it is one less
@@ -321,6 +322,10 @@ require("blink.cmp").setup({
 })
 
 require('harpoon-core').setup()
+
+require("early-retirement").setup({
+  minimumBufferNum = 3,
+})
 
 ----------------------------------------------------
 -- LSP / LANGUAGE SPECIFIC
@@ -792,6 +797,7 @@ end, { desc = "key-> Buffer: close" })
 vim.keymap.set("n", "<leader>bwa", "<cmd>%bd|e#<CR>", { desc = "key-> Buffer: close all other" })
 vim.keymap.set("n", "<leader>br", "<cmd>checktime<CR>", { desc = "key-> Buffer: refresh" })
 vim.keymap.set("n", "<leader>ba", ":Pick buffers<CR>", { desc = "key-> Buffer: list open" })
+vim.keymap.set("n", "<leader>ob", ":Pick buffers<CR>", { desc = "key-> Buffer: list open" })
 vim.keymap.set("n", "<leader>bs", "<cmd>vsplit<CR>", { desc = "key-> Buffer: split" })
 vim.keymap.set("n", "<leader>bc", "<cmd>wincmd w<CR>", { desc = "key-> Buffer: cycle split" })
 
