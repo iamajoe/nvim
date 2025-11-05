@@ -186,6 +186,7 @@ vim.pack.add({
   { src = "https://github.com/nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
   { src = "https://github.com/mrcjkb/rustaceanvim" },                                             -- lspConfig is not good enough,
   { src = "https://github.com/chrisgrieser/nvim-early-retirement" },                              -- remove not used buffers
+  { src = "https://github.com/folke/flash.nvim" },                                                -- fast movement
 
   -- NOTE: decided to use manual config per language that way i have more control
   --       i copy the files from lspconfig whenever i need them and it is one less
@@ -200,7 +201,8 @@ vim.pack.add({
   { src = "https://github.com/nvim-lua/plenary.nvim" },
   { src = "https://github.com/nvim-telescope/telescope.nvim" },
   { src = "https://github.com/nvim-telescope/telescope-live-grep-args.nvim" },
-  { src = "https://github.com/MeanderingProgrammer/harpoon-core.nvim" }, -- mark files for easy access
+  { src = "https://github.com/MeanderingProgrammer/harpoon-core.nvim" },                 -- mark files for easy access
+  { src = "https://github.com/j-hui/fidget.nvim" },                                      -- ui notifications
 })
 
 require "mini.pick".setup({
@@ -326,6 +328,8 @@ require('harpoon-core').setup()
 require("early-retirement").setup({
   minimumBufferNum = 3,
 })
+
+require('fidget').setup()
 
 ----------------------------------------------------
 -- LSP / LANGUAGE SPECIFIC
@@ -698,12 +702,6 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 ----------------------------------------------------
 -- KEYMAPS
 
-vim.keymap.set("n", "<leader>w", ":write<CR>", { desc = "key-> File: Save" })
-
-vim.keymap.set("n", "<leader>of", ":Pick files<CR>", { desc = "key-> Picker: Files" })
-vim.keymap.set("n", "<leader>h", ":Pick help<CR>", { desc = "key-> Picker: Help" })
-vim.keymap.set("n", "<leader>oe", ":Oil<CR>", { desc = "key-> File explorer: Oil" })
-
 vim.keymap.set({ "n", "v", "x" }, "<leader>y", '"+y<CR>', { desc = "key-> Clipboard: Yank" })
 vim.keymap.set({ "n", "v", "x" }, "<leader>d", '"+d<CR>', { desc = "key-> Clipboard: Delete" })
 vim.keymap.set("v", "p", [["_dP]], { desc = "key-> copy without losing last yield" })
@@ -784,7 +782,7 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz")
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
--- buffer navigation
+-- Buffer management
 vim.keymap.set("n", "<leader>bh", "<cmd>bprevious<CR>", { desc = "key-> Buffer: previous" })
 vim.keymap.set("n", "<leader>bl", "<cmd>bnext<CR>", { desc = "key-> Buffer: next" })
 vim.keymap.set("n", "<leader>bw", function()
@@ -814,6 +812,13 @@ vim.keymap.set(
   { desc = "key-> Comment: Toggle block" }
 )
 
+-- File management
+vim.keymap.set("n", "<leader>w", ":write<CR>", { desc = "key-> File: Save" })
+
+vim.keymap.set("n", "<leader>of", ":Pick files<CR>", { desc = "key-> Picker: Files" })
+vim.keymap.set("n", "<leader>h", ":Pick help<CR>", { desc = "key-> Picker: Help" })
+vim.keymap.set("n", "<leader>oe", ":Oil<CR>", { desc = "key-> File explorer: Oil" })
+
 -- Harpoon
 vim.keymap.set("n", "<leader>e", function()
   require('harpoon-core').toggle_quick_menu()
@@ -822,8 +827,12 @@ vim.keymap.set("n", "<leader>a", function()
   require('harpoon-core').add_file()
 end)
 
-vim.keymap.set("n", "<leader>ovl", ":lua vim.cmd(\"edit \" .. vim.lsp.get_log_path())<CR>", { desc = "key-> Vim: show logs" })
+-- Flash.nvim
+vim.keymap.set({"n", "x", "o"}, "fs", require('flash').jump, { desc = "key-> Flash Jump" })
+vim.keymap.set({"n", "x", "o"}, "<leader>fs", require('flash').treesitter, { desc = "key-> Flash Treesitter" })
 
+-- Misc
+vim.keymap.set("n", "<leader>ovl", ":lua vim.cmd(\"edit \" .. vim.lsp.get_log_path())<CR>", { desc = "key-> Vim: show logs" })
 vim.keymap.set("n", "<leader>ok", function()
   require("telescope.builtin").keymaps({
     sorter = require("telescope.sorters").get_generic_fuzzy_sorter({}),
