@@ -85,4 +85,21 @@ return {
     -- see: https://github.com/neovim/nvim-lspconfig/issues/804
     on_dir(get_root_dir(fname))
   end,
+
+  on_attach = function(client, bufnr)
+    vim.api.nvim_buf_create_user_command(bufnr, "LspGoRestart", function()
+      local root = client.config.root_dir
+
+      for _, c in ipairs(vim.lsp.get_clients({ name = "gopls" })) do
+        if not root or c.config.root_dir == root then
+          c:stop(true)
+        end
+      end
+
+      vim.defer_fn(function()
+        vim.lsp.enable({ "gopls" })
+        vim.cmd("edit")
+      end, 100)
+    end, { desc = "Restart gopls (this project/root)" })
+  end,
 }

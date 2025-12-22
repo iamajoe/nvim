@@ -49,7 +49,7 @@ return {
     if cargo_crate_dir == nil then
       on_dir(
         vim.fs.root(fname, { 'rust-project.json' })
-          or vim.fs.dirname(vim.fs.find('.git', { path = fname, upward = true })[1])
+        or vim.fs.dirname(vim.fs.find('.git', { path = fname, upward = true })[1])
       )
       return
     end
@@ -92,9 +92,24 @@ return {
       init_params.initializationOptions = config.settings['rust-analyzer']
     end
   end,
-  on_attach = function(_, bufnr)
+  on_attach = function(client, bufnr)
     vim.api.nvim_buf_create_user_command(bufnr, 'LspCargoReload', function()
       reload_workspace(bufnr)
     end, { desc = 'Reload current cargo workspace' })
+
+    vim.api.nvim_buf_create_user_command(bufnr, "LspRustRestart", function()
+      local root = client.config.root_dir
+
+      for _, c in ipairs(vim.lsp.get_clients({ name = "rust_analyzer" })) do
+        if not root or c.config.root_dir == root then
+          c:stop(true)
+        end
+      end
+
+      vim.defer_fn(function()
+        vim.lsp.enable({ "rust_analyzer" })
+        vim.cmd("edit")
+      end, 100)
+    end, { desc = "Restart rust-analyzer (this project/root)" })
   end,
 }

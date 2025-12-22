@@ -82,5 +82,23 @@ return {
         },
       })
     end, {})
+
+    -- restart ts_ls for this project/root
+    vim.api.nvim_buf_create_user_command(bufnr, "LspTypescriptRestart", function()
+      local root = client.config.root_dir
+
+      -- stop all ts_ls clients (optionally only those in the same root)
+      for _, c in ipairs(vim.lsp.get_clients({ name = "ts_ls" })) do
+        if not root or c.config.root_dir == root then
+          c:stop(true)
+        end
+      end
+
+      -- start again; :edit retriggers attach & spawns server if enabled
+      vim.defer_fn(function()
+        vim.lsp.enable({ "ts_ls" })
+        vim.cmd("edit")
+      end, 100)
+    end, { desc = "Restart TypeScript language server (ts_ls)" })
   end,
 }

@@ -69,6 +69,21 @@ return {
         },
       }, nil, bufnr)
     end, {})
+
+    vim.api.nvim_buf_create_user_command(bufnr, "LspEslintRestart", function()
+      local root = client.config.root_dir
+
+      for _, c in ipairs(vim.lsp.get_clients({ name = "eslint" })) do
+        if not root or c.config.root_dir == root then
+          c:stop(true)
+        end
+      end
+
+      vim.defer_fn(function()
+        vim.lsp.enable({ "eslint" })
+        vim.cmd("edit")
+      end, 100)
+    end, { desc = "Restart eslint LSP (this project/root)" })
   end,
   root_dir = function(bufnr, on_dir)
     -- The project root is where the LSP can be started from
@@ -90,7 +105,7 @@ return {
     -- We keep this for backward compatibility.
     local filename = vim.api.nvim_buf_get_name(bufnr)
     local eslint_config_files_with_package_json =
-      insert_package_json(eslint_config_files, 'eslintConfig', filename)
+        insert_package_json(eslint_config_files, 'eslintConfig', filename)
     local is_buffer_using_eslint = vim.fs.find(eslint_config_files_with_package_json, {
       path = filename,
       type = 'file',

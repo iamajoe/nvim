@@ -183,7 +183,7 @@ vim.pack.add({
   { src = "https://github.com/numToStr/Comment.nvim" },                                           -- toggle comment
   { src = "https://github.com/Saghen/blink.cmp",                            version = "v1.6.0" }, -- autocompletion
   { src = "https://github.com/catppuccin/nvim" },                                                 -- theme
-  { src = "https://github.com/nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter",             build = ":TSUpdate" },
   { src = "https://github.com/mrcjkb/rustaceanvim" },                                             -- lspConfig is not good enough,
   { src = "https://github.com/chrisgrieser/nvim-early-retirement" },                              -- remove not used buffers
   { src = "https://github.com/folke/flash.nvim" },                                                -- fast movement
@@ -201,8 +201,8 @@ vim.pack.add({
   { src = "https://github.com/nvim-lua/plenary.nvim" },
   { src = "https://github.com/nvim-telescope/telescope.nvim" },
   { src = "https://github.com/nvim-telescope/telescope-live-grep-args.nvim" },
-  { src = "https://github.com/MeanderingProgrammer/harpoon-core.nvim" },                 -- mark files for easy access
-  { src = "https://github.com/j-hui/fidget.nvim" },                                      -- ui notifications
+  { src = "https://github.com/MeanderingProgrammer/harpoon-core.nvim" }, -- mark files for easy access
+  { src = "https://github.com/j-hui/fidget.nvim" },                      -- ui notifications
 })
 
 require "mini.pick".setup({
@@ -461,8 +461,8 @@ require("telescope").setup({
         ["<C-h>"] = "which_key",
         ["<c-d>"] = require("telescope.actions").delete_buffer,
         ["<C-r>"] = ts_search_replace,
-        ["<C-p>"] = ts_actions.move_selection_previous, -- move up 
-        ["<C-n>"] = ts_actions.move_selection_next,     -- move down 
+        ["<C-p>"] = ts_actions.move_selection_previous, -- move up
+        ["<C-n>"] = ts_actions.move_selection_next,     -- move down
         ["<C-j>"] = ts_actions.move_selection_next,     -- move down
         ["<C-k>"] = ts_actions.move_selection_previous, -- move up
         ["<C-o>"] = ts_actions.select_default,          -- enter
@@ -642,16 +642,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
         vim.tbl_extend("force", opts, { desc = "key-> LSP: Go to definition" }))
     end
 
-    vim.keymap.set("n", "<leader>or", function() 
+    vim.keymap.set("n", "<leader>or", function()
       local builtin = require("telescope.builtin")
       builtin.lsp_references({
-        include_declaration = true,   -- include definitions
-        include_current_line = true,  -- include the reference under cursor
+        include_declaration = true,  -- include definitions
+        include_current_line = true, -- include the reference under cursor
         show_line = true,
       })
     end, vim.tbl_extend("force", opts, { desc = "key-> LSP: Show references" }))
 
-    vim.keymap.set("n", "<leader>ow", function() 
+    vim.keymap.set("n", "<leader>ow", function()
       local builtin = require("telescope.builtin")
       builtin.diagnostics({})
     end, vim.tbl_extend("force", opts, { desc = "key-> LSP: Show diagnostics" }))
@@ -664,6 +664,30 @@ vim.api.nvim_create_autocmd("LspAttach", {
     if supports("textDocument/formatting") or supports("textDocument/rangeFormatting") then
       vim.keymap.set("n", "<leader>ff", function() vim.lsp.buf.format({ async = false }) end,
         vim.tbl_extend("force", opts, { desc = "key-> LSP: Format buffer" }))
+
+      -- restart the lsp depending on the kind of attachment
+      vim.keymap.set("n", "<leader>fr", function()
+          local bufnr = 0
+
+          if #vim.lsp.get_clients({ name = "ts_ls", bufnr = bufnr }) > 0 then
+            vim.cmd("LspTypescriptRestart")
+          end
+
+          if #vim.lsp.get_clients({ name = "eslint", bufnr = bufnr }) > 0 then
+            vim.cmd("LspEslintRestart")
+          end
+
+          if #vim.lsp.get_clients({ name = "gopls", bufnr = bufnr }) > 0 then
+            vim.cmd("LspGoRestart")
+          end
+
+          if #vim.lsp.get_clients({ name = "rust_analyzer", bufnr = bufnr }) > 0 then
+            vim.cmd("LspCargoReload")
+            vim.cmd("LspRustRestart")
+          end
+        end,
+        vim.tbl_extend("force", opts, { desc = "key-> LSP: Restart" })
+      )
     end
 
     if supports("textDocument/codeAction") then
@@ -763,7 +787,7 @@ vim.keymap.set("n", "]d", function() vim.diagnostic.jump { count = 1 } end, { de
 vim.keymap.set("n", "<leader>vd", vim.diagnostic.open_float, { desc = "key-> Diagnostics: View" })
 -- vim.keymap.set("n", "<leader>vca", vim.lsp.buf.code_action(), { desc = "key-> Diagnostics: Action")
 -- vim.keymap.set("n", "<leader>do", function() vim.diagnostic.open_float(nil, { scope = "line" }) end,
-  -- { desc = "key-> Diagnostics: Show line" })
+-- { desc = "key-> Diagnostics: Show line" })
 vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "key-> Diagnostics: Loclist" })
 
 vim.keymap.set("n", "J", "mzJ`z", { desc = "key-> join lines" })
@@ -828,11 +852,12 @@ vim.keymap.set("n", "<leader>a", function()
 end)
 
 -- Flash.nvim
-vim.keymap.set({"n", "x", "o"}, "fs", require('flash').jump, { desc = "key-> Flash Jump" })
-vim.keymap.set({"n", "x", "o"}, "<leader>fs", require('flash').treesitter, { desc = "key-> Flash Treesitter" })
+vim.keymap.set({ "n", "x", "o" }, "fs", require('flash').jump, { desc = "key-> Flash Jump" })
+vim.keymap.set({ "n", "x", "o" }, "<leader>fs", require('flash').treesitter, { desc = "key-> Flash Treesitter" })
 
 -- Misc
-vim.keymap.set("n", "<leader>ovl", ":lua vim.cmd(\"edit \" .. vim.lsp.get_log_path())<CR>", { desc = "key-> Vim: show logs" })
+vim.keymap.set("n", "<leader>ovl", ":lua vim.cmd(\"edit \" .. vim.lsp.get_log_path())<CR>",
+  { desc = "key-> Vim: show logs" })
 vim.keymap.set("n", "<leader>ok", function()
   require("telescope.builtin").keymaps({
     sorter = require("telescope.sorters").get_generic_fuzzy_sorter({}),
