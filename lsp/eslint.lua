@@ -41,6 +41,13 @@ local eslint_config_files = {
   'eslint.config.cts',
 }
 
+local ignored = {
+  'node_modules',
+  'src%-tauri',
+  'vendor',
+  '%.git',
+}
+
 ---@type vim.lsp.Config
 return {
   cmd = { 'vscode-eslint-language-server', '--stdio' },
@@ -180,7 +187,16 @@ return {
         -- Filter out files inside node_modules
         local filtered_files = {}
         for _, found_file in ipairs(found_files) do
-          if string.find(found_file, '[/\\]node_modules[/\\]') == nil then
+          local should_ignore = false
+
+          for _, pat in ipairs(ignored) do
+            if string.find(found_file, '[/\\]' .. pat .. '[/\\]') then
+              should_ignore = true
+              break
+            end
+          end
+
+          if not should_ignore then
             table.insert(filtered_files, found_file)
           end
         end
