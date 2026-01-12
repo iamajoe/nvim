@@ -183,7 +183,7 @@ vim.pack.add({
   { src = "https://github.com/numToStr/Comment.nvim" },                                           -- toggle comment
   { src = "https://github.com/Saghen/blink.cmp",                            version = "v1.6.0" }, -- autocompletion
   { src = "https://github.com/catppuccin/nvim" },                                                 -- theme
-  { src = "https://github.com/nvim-treesitter/nvim-treesitter",             build = ":TSUpdate" },
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "v0.10.0", build = ":TSUpdate" },
   { src = "https://github.com/mrcjkb/rustaceanvim" },                                             -- lspConfig is not good enough,
   { src = "https://github.com/chrisgrieser/nvim-early-retirement" },                              -- remove not used buffers
   { src = "https://github.com/folke/flash.nvim" },                                                -- fast movement
@@ -222,19 +222,7 @@ require "mini.pick".setup({
   },
 })
 
-require "nvim-treesitter.configs".setup({
-  ensure_installed = {
-    "typescript",
-    "javascript",
-    "html",
-    "css",
-    "go",
-    "rust",
-    "toml",
-    "json",
-    "lua",
-  },
-
+require "nvim-treesitter".setup({
   auto_install = true,
   highlight = {
     enable = true,
